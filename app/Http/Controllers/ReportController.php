@@ -390,6 +390,7 @@ class ReportController extends Controller
                         WHERE transactions.status='received' AND transactions.type='stock_adjustment' $location_filter 
                         AND (SAL.variation_id=variations.id)) as total_adjusted"),
                 DB::raw("SUM(vld.qty_available) as stock"),
+                DB::raw("SUM(vld.qty_available)*variations.dpp_inc_tax as purchase_price"),
                 'variations.sub_sku as sku',
                 'p.name as product',
                 'p.type',
@@ -398,7 +399,8 @@ class ReportController extends Controller
                 'p.enable_stock as enable_stock',
                 'variations.sell_price_inc_tax as unit_price',
                 'pv.name as product_variation',
-                'variations.name as variation_name'
+                'variations.name as variation_name',
+                'variations.dpp_inc_tax as unit_purchase_price'
             )->groupBy('variations.id');
 
             return Datatables::of($products)
@@ -414,6 +416,21 @@ class ReportController extends Controller
                     $name = $row->product;
                     if ($row->type == 'variable') {
                         $name .= ' - ' . $row->product_variation . '-' . $row->variation_name;
+                    }
+                    return $name;
+                })
+                ->editColumn('purchase_price', function ($row) {
+                    $purchase_price = 0;
+                    if ($row->purchase_price) {
+                        $purchase_price =  (float)$row->purchase_price;
+                    }
+
+                    return '<span class="display_currency purchase_price" data-currency_symbol=true data-unit="Q"  data-orig-value="' . $purchase_price . '"  >' . $purchase_price . '</span> ' ;
+                })
+                ->editColumn('unit_purchase_price', function ($row) {
+                    $name = $row->unit_purchase_price;
+                    if ($row->type == 'variable') {
+                        $name .= ' - ' . $row->unit_purchase_price . '-' . $row->unit_purchase_price;
                     }
                     return $name;
                 })
@@ -458,7 +475,7 @@ class ReportController extends Controller
                 ->removeColumn('unit')
                 ->removeColumn('id')
                 ->rawColumns(['unit_price', 'total_transfered', 'total_sold',
-                    'total_adjusted', 'stock'])
+                    'total_adjusted', 'stock','purchase_price'])
                 ->make(true);
         }
 
@@ -2065,5 +2082,172 @@ class ReportController extends Controller
                 ->rawColumns(['current_stock', 'subtotal', 'total_qty_sold'])
                 ->make(true);
         }
+    }
+    /**
+     * Shows product stock details
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getTotalInventoryReport(Request $request)
+    {
+        if (!auth()->user()->can('total_inventory_report.view')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = $request->session()->get('user.business_id');
+
+        $selling_price_groups = SellingPriceGroup::where('business_id', $business_id)
+                                                ->get();
+        $allowed_selling_price_group = false;
+        foreach ($selling_price_groups as $selling_price_group) {
+            if (auth()->user()->can('selling_price_group.' . $selling_price_group->id)) {
+                $allowed_selling_price_group = true;
+                break;
+            }
+        }
+
+         //Return the details in ajax call
+        if ($request->ajax()) {
+            $query = Variation::leftjoin('products as p', 'p.id', '=', 'variations.product_id')
+                    ->leftjoin('units', 'p.unit_id', '=', 'units.id')
+                    ->leftjoin('variation_location_details as vld', 'variations.id', '=', 'vld.variation_id')
+                    ->leftjoin('product_variations as pv', 'variations.product_variation_id', '=', 'pv.id')
+                    ->where('p.business_id', $business_id)
+                    ->whereIn('p.type', ['single', 'variable']);
+
+            $permitted_locations = auth()->user()->permitted_locations();
+            $location_filter = '';
+
+            if ($permitted_locations != 'all') {
+                $query->whereIn('vld.location_id', $permitted_locations);
+
+                $locations_imploded = implode(', ', $permitted_locations);
+                $location_filter .= "AND transactions.location_id IN ($locations_imploded) ";
+            }
+
+            if (!empty($request->input('location_id'))) {
+                $location_id = $request->input('location_id');
+
+                $query->where('vld.location_id', $location_id);
+
+                $location_filter .= "AND transactions.location_id=$location_id";
+            }
+
+            if (!empty($request->input('category_id'))) {
+                $query->where('p.category_id', $request->input('category_id'));
+            }
+            if (!empty($request->input('sub_category_id'))) {
+                $query->where('p.sub_category_id', $request->input('sub_category_id'));
+            }
+            if (!empty($request->input('brand_id'))) {
+                $query->where('p.brand_id', $request->input('brand_id'));
+            }
+            if (!empty($request->input('unit_id'))) {
+                $query->where('p.unit_id', $request->input('unit_id'));
+            }
+
+            $products = $query->select(
+                // DB::raw("(SELECT SUM(quantity) FROM transaction_sell_lines LEFT JOIN transactions ON transaction_sell_lines.transaction_id=transactions.id WHERE transactions.status='final' $location_filter AND
+                //     transaction_sell_lines.product_id=products.id) as total_sold"),
+
+                DB::raw("(SELECT SUM(IF(transactions.type='sell', TSL.quantity - TSL.quantity_returned , -1* TPL.quantity) ) FROM transactions 
+                        LEFT JOIN transaction_sell_lines AS TSL ON transactions.id=TSL.transaction_id
+
+                        LEFT JOIN purchase_lines AS TPL ON transactions.id=TPL.transaction_id
+
+                        WHERE transactions.status='final' AND transactions.type='sell' $location_filter 
+                        AND (TSL.variation_id=variations.id OR TPL.variation_id=variations.id)) as total_sold"),
+                DB::raw("(SELECT SUM(IF(transactions.type='sell_transfer', TSL.quantity, 0) ) FROM transactions 
+                        LEFT JOIN transaction_sell_lines AS TSL ON transactions.id=TSL.transaction_id
+                        WHERE transactions.status='final' AND transactions.type='sell_transfer' $location_filter 
+                        AND (TSL.variation_id=variations.id)) as total_transfered"),
+                DB::raw("(SELECT SUM(IF(transactions.type='stock_adjustment', SAL.quantity, 0) ) FROM transactions 
+                        LEFT JOIN stock_adjustment_lines AS SAL ON transactions.id=SAL.transaction_id
+                        WHERE transactions.status='received' AND transactions.type='stock_adjustment' $location_filter 
+                        AND (SAL.variation_id=variations.id)) as total_adjusted"),
+                DB::raw("SUM(vld.qty_available) as stock"),
+                'variations.sub_sku as sku',
+                'p.name as product',
+                'p.type',
+                'p.id as product_id',
+                'units.short_name as unit',
+                'p.enable_stock as enable_stock',
+                'variations.sell_price_inc_tax as unit_price',
+                'pv.name as product_variation',
+                'variations.name as variation_name'
+            )->groupBy('variations.id');
+
+            return Datatables::of($products)
+                ->editColumn('stock', function ($row) {
+                    if ($row->enable_stock) {
+                        $stock = $row->stock ? $row->stock : 0 ;
+                        return  '<span class="current_stock display_currency" data-orig-value="' . (float)$stock . '" data-unit="' . $row->unit . '" data-currency_symbol=false > ' . (float)$stock . '</span>' . ' ' . $row->unit ;
+                    } else {
+                        return 'N/A';
+                    }
+                })
+                ->editColumn('product', function ($row) {
+                    $name = $row->product;
+                    if ($row->type == 'variable') {
+                        $name .= ' - ' . $row->product_variation . '-' . $row->variation_name;
+                    }
+                    return $name;
+                })
+                ->editColumn('total_sold', function ($row) {
+                    $total_sold = 0;
+                    if ($row->total_sold) {
+                        $total_sold =  (float)$row->total_sold;
+                    }
+
+                    return '<span class="display_currency total_sold" data-currency_symbol=false data-orig-value="' . $total_sold . '" data-unit="' . $row->unit . '" >' . $total_sold . '</span> ' . $row->unit;
+                })
+                ->editColumn('total_transfered', function ($row) {
+                    $total_transfered = 0;
+                    if ($row->total_transfered) {
+                        $total_transfered =  (float)$row->total_transfered;
+                    }
+
+                    return '<span class="display_currency total_transfered" data-currency_symbol=false data-orig-value="' . $total_transfered . '" data-unit="' . $row->unit . '" >' . $total_transfered . '</span> ' . $row->unit;
+                })
+                ->editColumn('total_adjusted', function ($row) {
+                    $total_adjusted = 0;
+                    if ($row->total_adjusted) {
+                        $total_adjusted =  (float)$row->total_adjusted;
+                    }
+
+                    return '<span class="display_currency total_adjusted" data-currency_symbol=false  data-orig-value="' . $total_adjusted . '" data-unit="' . $row->unit . '" >' . $total_adjusted . '</span> ' . $row->unit;
+                })
+                ->editColumn('unit_price', function ($row) use ($allowed_selling_price_group) {
+                    $html = '';
+                    if ($row->type == 'single' && auth()->user()->can('access_default_selling_price')) {
+                        $html .= '<span class="display_currency" data-currency_symbol=true >'
+                        . $row->unit_price . '</span>';
+                    }
+
+                    if ($allowed_selling_price_group) {
+                        $html .= ' <button type="button" class="btn btn-primary btn-xs btn-modal no-print" data-container=".view_modal" data-href="' . action('ProductController@viewGroupPrice', [$row->product_id]) .'">' . __('lang_v1.view_group_prices') . '</button>';
+                    }
+
+                    return $html;
+                })
+                ->removeColumn('enable_stock')
+                ->removeColumn('unit')
+                ->removeColumn('id')
+                ->rawColumns(['unit_price', 'total_transfered', 'total_sold',
+                    'total_adjusted', 'stock'])
+                ->make(true);
+        }
+
+        $categories = Category::where('business_id', $business_id)
+                            ->where('parent_id', 0)
+                            ->pluck('name', 'id');
+        $brands = Brands::where('business_id', $business_id)
+                            ->pluck('name', 'id');
+        $units = Unit::where('business_id', $business_id)
+                            ->pluck('short_name', 'id');
+        $business_locations = BusinessLocation::forDropdown($business_id, true);
+
+        return view('report.total_inventory_report')
+                ->with(compact('categories', 'brands', 'units', 'business_locations'));
     }
 }

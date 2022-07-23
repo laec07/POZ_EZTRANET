@@ -10,7 +10,12 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/*
+DB::listen(function($query){
+  //Imprimimos la consulta ejecutada
+  echo "<pre> {$query->sql } </pre>";
+});
+*/
 include_once('install_r.php');
 
 Route::middleware(['IsInstalled'])->group(function () {
@@ -147,6 +152,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/reports/lot-report', 'ReportController@getLotReport');
     Route::get('/reports/purchase-payment-report', 'ReportController@purchasePaymentReport');
     Route::get('/reports/sell-payment-report', 'ReportController@sellPaymentReport');
+    Route::get('/reports/total_inventory_report', 'ReportController@getTotalInventoryReport');
     
     //Business Location Settings...
     Route::prefix('business-location/{location_id}')->name('location.')->group(function () {

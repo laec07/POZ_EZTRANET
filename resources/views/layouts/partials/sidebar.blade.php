@@ -355,6 +355,10 @@
               @can('sales_representative.view')
                 <li class="{{ $request->segment(2) == 'sales-representative-report' ? 'active' : '' }}" ><a href="{{action('ReportController@getSalesRepresentativeReport')}}"><i class="fa fa-user" aria-hidden="true"></i>@lang('report.sales_representative')</a></li>
               @endcan
+<!-- Agregando otra opcion de menu laestrada 072022
+              @can('total_inventory_report.view')
+                <li class="{{ $request->segment(2) == 'total_inventory_report' ? 'active' : '' }}" ><a href="{{action('ReportController@getTotalInventoryReport')}}"><i class="fa fa-money" aria-hidden="true"></i>@lang('total inventory report')</a></li>
+              @endcan -->
 
               @if(in_array('tables', $enabled_modules))
                 @can('purchase_n_sell_report.view')

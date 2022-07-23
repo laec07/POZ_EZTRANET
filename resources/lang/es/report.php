@@ -67,5 +67,6 @@
 "total_expense" => "Gasto total", 
 "net_profit" => "Beneficio neto", 
 "total_stock_adjustment" => "Ajuste total de stock", 
-"total_stock_recovered" => "Stock total recuperado", 
+"total_stock_recovered" => "Stock total recuperado",
+"total_purchase_price" => "precio compra",
 ];

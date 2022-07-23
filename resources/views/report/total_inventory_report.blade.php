@@ -74,8 +74,6 @@
                                 <th>@lang('report.total_unit_sold')</th>
                                 <th>@lang('lang_v1.total_unit_transfered')</th>
                                 <th>@lang('lang_v1.total_unit_adjusted')</th>
-                                <th>@lang('lang_v1.unit_purchase_price')</th>
-                                <th>@lang('lang_v1.total_purchase_price')</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -85,8 +83,6 @@
                                 <td id="footer_total_sold"></td>
                                 <td id="footer_total_transfered"></td>
                                 <td id="footer_total_adjusted"></td>
-                                <td id="footer_unit_purchase"></td>
-                                <td id="footer_total_purchase"></td>
                             </tr>
                         </tfoot>
                     </table>

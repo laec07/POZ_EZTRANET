@@ -60,13 +60,17 @@ $(document).ready( function(){
                                 {data: 'stock', name: 'stock', searchable: false},
                                 {data: 'total_sold', name: 'total_sold', searchable: false},
                                 {data: 'total_transfered', name: 'total_transfered', searchable: false},
-                                {data: 'total_adjusted', name: 'total_adjusted', searchable: false}
+                                {data: 'total_adjusted', name: 'total_adjusted', searchable: false},
+                                {data: 'unit_purchase_price', name: 'unit_purchase_price', searchable: false},
+                                {data: 'purchase_price', name: 'purchase_price', searchable: false}
                             ],
                             "fnDrawCallback": function (oSettings) {
                                 $('#footer_total_stock').html(__sum_stock($('#stock_report_table'), 'current_stock'));
                                 $('#footer_total_sold').html(__sum_stock($('#stock_report_table'), 'total_sold'));
                                 $('#footer_total_transfered').html(__sum_stock($('#stock_report_table'), 'total_transfered'));
                                 $('#footer_total_adjusted').html(__sum_stock($('#stock_report_table'), 'total_adjusted'));
+                                $('#footer_unit_purchase').html(__sum_stock($('#stock_report_table'), 'unit_purchase_price'));
+                                $('#footer_total_purchase').html(__sum_stock($('#stock_report_table'), 'purchase_price'));
                                 __currency_convert_recursively($('#stock_report_table'));
                             }
                         });
