@@ -1142,7 +1142,7 @@ class ProductController extends Controller
                 $selected_rows = explode(',', $request->input('selected_rows'));
 
                 $products = Product::where('business_id', $business_id)
-                                   // ->whereIn('id', $selected_rows)
+                                    ->whereIn('id', $selected_rows)
                                     ->with('purchase_lines')
                                     ->get();
                 $deletable_products = [];
