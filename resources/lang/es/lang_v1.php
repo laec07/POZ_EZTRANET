@@ -1,19 +1,19 @@
 <?php 
 return [
 	"enable_editing_product_from_purchase" => "Habilitar la edición del precio del producto desde la pantalla de compra", 
-	"sales_commission_agent" => "Agente comercial", /* modified */ 
-	"sales_commission_agents" => "Agentes comerciales", /* modified */ 
+	"sales_commission_agent" => "Centro costo", /* modified */ 
+	"sales_commission_agents" => "Centro de costos", /* modified */ 
 	"disable" => "Inhabilitar", 
 	"logged_in_user" => "Usuario conectado", 
 	"select_from_users_list" => "Seleccionar de la lista de usuarios", 
-	"select_from_commisssion_agents_list" => "Seleccione de la lista de agentes comerciales", /* modified */ 
-	"add_sales_commission_agent" => "Agregar agente comercial", /* modified */
-	"commission_agent_added_success" => "Agente comercial agregado con éxito", /* modified */
-	"edit_sales_commission_agent" => "Editar agente comercial", /* modified */
-	"commission_agent_updated_success" => "Agente comercial actualizado con éxito", /* modified */
-	"commission_agent_deleted_success" => "Agente comercial eliminado con éxito", /* modified */
+	"select_from_commisssion_agents_list" => "Seleccione de la lista de Centro de costos", /* modified */ 
+	"add_sales_commission_agent" => "Agregar Centro costo", /* modified */
+	"commission_agent_added_success" => "Centro costo agregado con éxito", /* modified */
+	"edit_sales_commission_agent" => "Editar Centro costo", /* modified */
+	"commission_agent_updated_success" => "Centro costo actualizado con éxito", /* modified */
+	"commission_agent_deleted_success" => "Centro costo eliminado con éxito", /* modified */
 	"contact_no" => "Contacto No.", 
-	"commission_agent" => "Comisionista", 
+	"commission_agent" => "Centro de costo", 
 	'cmmsn_percent' => 'Porcentaje de la Comisión de Ventas (%)', 
 	"sales_added" => "Ventas agregadas", 
 	"sales_with_commission" => "Ventas con comisión", 
@@ -78,16 +78,16 @@ return [
 "pos_settings" => "Configuración de POS", 
 "disable_discount" => "Deshabilitar Descuento", /* modified */
 "disable_order_tax" => "Deshabilitar Impuesto", /* modified */
-"customer_groups" => "Grupos de clientes", 
-"customer_group" => "Grupo de clientes", 
-"all_your_customer_groups" => "Todos los grupos de clientes", 
-"add_customer_group" => "Agregar grupo de clientes", 
-"customer_group_name" => "Nombre del grupo de clientes", 
+"customer_groups" => "Grupos de Responsable", 
+"customer_group" => "Grupo de Responsable", 
+"all_your_customer_groups" => "Todos los grupos de Responsable", 
+"add_customer_group" => "Agregar grupo de Responsable", 
+"customer_group_name" => "Nombre del grupo de Responsable", 
 "calculation_percentage" => "Porcentaje de cálculo (%)", 
 "tooltip_calculation_percentage" => "<b> Precio de venta = Precio de venta establecido para el producto + porcentaje de cálculo </b> <br/> <br/> Puede especificar el porcentaje como positivo para aumentar y disminuir el precio de venta", 
 "success" => "Éxito", 
-"edit_customer_group" => "Editar grupo de clientes", 
-"customer_groups_report" => "Informe de grupos de clientes", 
+"edit_customer_group" => "Editar grupo de Responsable", 
+"customer_groups_report" => "Informe de grupos de Responsable", 
 "none" => "Ninguna", 
 "enable_imei_or_sr_no" => "Habilitar IMEI o número de serie", 
 "tooltip_sr_no" => "Habilitar o deshabilitar la adición de IMEI o número de serie del producto al agregar productos en la pantalla POS", 
@@ -105,7 +105,7 @@ return [
 "months" => "Meses", 
 "days" => "Dias", 
 "suppliers" => "Proveedores", 
-"customers" => "Clientes", 
+"customers" => "Responsable", 
 "enter_product_name_to_print_labels" => "Introduzca el nombre de los productos para imprimir las etiquetas", 
 "manage_product_variations" => "Gestionar variaciones de producto", 
 "all_variations" => "Todas las variaciones", 
@@ -264,7 +264,7 @@ return [
    'quotation_heading' => 'Encabezado de oferta',
    'quotation' => 'Cotización',
    'quotation_no_prefix' => 'Cita No. etiqueta',
-   'tooltip_quotation_heading' => 'El encabezado de cotizaciones o estimaciones se utiliza al proporcionar cotizaciones a los clientes.',
+   'tooltip_quotation_heading' => 'El encabezado de cotizaciones o estimaciones se utiliza al proporcionar cotizaciones a los Responsable.',
    'quotation_added' => 'Oferta agregada con éxito',
    'quotation_updated' => 'Cita actualizada con éxito',
    'product_sold_details_register' => 'Detalles de los productos vendidos',

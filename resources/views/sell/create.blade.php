@@ -85,15 +85,15 @@
 							</div>
 						</div>
 					</div>
-
+<!--
 					<div class="col-md-3">
 			          <div class="form-group">
 			            <div class="multi-input">
-			              {!! Form::label('pay_term_number', __('contact.pay_term') . ':') !!} @show_tooltip(__('tooltip.pay_term'))
+			              { !! Form::label('pay_term_number', __('contact.pay_term') . ':') !!} @ show_tooltip(__('tooltip.pay_term'))
 			              <br/>
-			              {!! Form::number('pay_term_number', $walk_in_customer['pay_term_number'], ['class' => 'form-control width-40 pull-left', 'placeholder' => __('contact.pay_term')]); !!}
+			              { !! Form::number('pay_term_number', $walk_in_customer['pay_term_number'], ['class' => 'form-control width-40 pull-left', 'placeholder' => __('contact.pay_term')]); !!}
 
-			              {!! Form::select('pay_term_type', 
+			              { !! Form::select('pay_term_type', 
 			              	['months' => __('lang_v1.months'), 
 			              		'days' => __('lang_v1.days')], 
 			              		$walk_in_customer['pay_term_type'], 
@@ -101,7 +101,7 @@
 			            </div>
 			          </div>
 			        </div>
-
+				-->
 					@if(!empty($commission_agent))
 					<div class="col-sm-3">
 						<div class="form-group">

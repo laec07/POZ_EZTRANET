@@ -17,7 +17,7 @@
 "added_success" => "Contacto agregado correctamente",
 "updated_success" => "Contacto actualizado con éxito",
 "deleted_success" => "Contacto eliminado correctamente",
-"add_new_customer" => "Agregar nuevo cliente",
+"add_new_customer" => "Agregar nuevo Responsable",
 "view_contact" => "Ver contacto",
 "contact_info" => "Datos de :contacts",
 "all_purchases_linked_to_this_contact" => "Todas las compras relacionadas con este contacto",
@@ -28,5 +28,5 @@
 "total_purchase_paid" => "Pago total de compra", 
 "total_sale_paid" => "Pago de venta total", 
 "total_sale_due" => "Venta total debida", /* modified */
-"customer" => "Cliente", 
+"customer" => "Responsable", 
 ];
