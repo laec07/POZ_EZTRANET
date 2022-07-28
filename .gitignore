@@ -14,3 +14,4 @@ npm-debug.log
 /public/uploads/documents
 /public/uploads/img
 /public/uploads/invoice_logos
+.env1
