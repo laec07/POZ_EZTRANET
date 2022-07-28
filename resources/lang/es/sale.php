@@ -1,9 +1,9 @@
 <?php 
  return [ 
-"sale" => "Vender",
-"sells" => "Ventas",
-"list_sale" => "Lista de ventas",
-"add_sale" => "Agregar venta",
+"sale" => "Requisiciones",
+"sells" => "Requisiciones",
+"list_sale" => "Lista de Requisiciones",
+"add_sale" => "Agregar Requisicion",
 "pos_sale" => "POS",
 "draft_added" => "Borrador añadido con éxito", /* modified */
 "invoice_added" => "Factura añadida con éxito",
@@ -22,7 +22,7 @@
 "qty" => "Cantidad",
 "subtotal" => "Subtotal", /* modified */
 "recent_transactions" => "Tus transacciones recientes",
-"pos_sale_added" => "Venta añadida con éxito",
+"pos_sale_added" => "Requisicion añadida con éxito",
 "price_inc_tax" => "Precio inc. Impuesto",
 "tax" => "Impuesto",
 "edit_discount" => "Editar descuento",
@@ -41,19 +41,19 @@
 "payment_info" => "Información de pago",
 "drafts" => "Borradores",
 "all_drafts" => "Todos los borradores",
-"sell_details" => "Detalles de venta", /* modified */
+"sell_details" => "Detalles de Requisicion", /* modified */
 "payments" => "Pagos",
 "amount" => "Cantidad",
 "payment_mode" => "Método de pago", /* modified */
 "payment_note" => "Nota de pago",
-"sell_note" => "Nota de venta", /* modified */
+"sell_note" => "Nota de Requisicion", /* modified */
 "staff_note" => "Nota del personal",
 "draft_updated" => "Borrador actualizado con éxito",
-"pos_sale_updated" => "Venta actualizada con éxito",
+"pos_sale_updated" => "Requisicion actualizada con éxito",
 "location" => "Ubicación",
 "add_payment_row" => "Agregar fila de pago", 
 "finalize_payment" => "Finalizar el pago", 
-"sale_date" => "Fecha de venta", 
+"sale_date" => "Fecha de Requisicion", 
 "list_pos" => "Lista POS", 
-"edit_sale" => "Editar Venta", 
+"edit_sale" => "Editar Requisicion", 
 ];
