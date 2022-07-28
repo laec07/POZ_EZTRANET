@@ -1,4 +1,0 @@
-[2022-07-25 20:59:06] production.EMERGENCY: File:C:\sistemas\POZ_EZTRANET\app\Http\Controllers\ImportProductsController.phpLine:125Message:Undefined offset: 28  
-[2022-07-25 21:02:27] production.EMERGENCY: File:C:\sistemas\POZ_EZTRANET\app\Http\Controllers\ImportProductsController.phpLine:125Message:Undefined offset: 28  
-[2022-07-25 21:06:57] production.EMERGENCY: File:C:\sistemas\POZ_EZTRANET\app\Http\Controllers\ImportProductsController.phpLine:561Message:Invalid value for Selling Price Tax Type in row no. 1  
-[2022-07-25 21:08:12] production.EMERGENCY: File:C:\sistemas\POZ_EZTRANET\app\Http\Controllers\ImportProductsController.phpLine:561Message:Invalid value for Selling Price Tax Type in row no. 1  
