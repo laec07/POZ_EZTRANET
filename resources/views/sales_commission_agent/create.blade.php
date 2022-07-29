@@ -35,29 +35,31 @@
             {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => __( 'business.email' ) ]); !!}
         </div>
       </div>
+
       <div class="col-md-6">
         <div class="form-group">
           {!! Form::label('contact_no', __( 'lang_v1.contact_no' ) . ':') !!}
             {!! Form::text('contact_no', null, ['class' => 'form-control', 'placeholder' => __( 'lang_v1.contact_no' ) ]); !!}
         </div>
       </div>
+      <!-- Se quita campos para que funcione como centro de costo laec 2022
       <div class="col-md-12">
         <div class="form-group">
-          {!! Form::label('address', __( 'business.address' ) . ':') !!}
-            {!! Form::textarea('address', null, ['class' => 'form-control', 'placeholder' => __( 'business.address'), 'rows' => 3 ]); !!}
+          { !! Form::label('address', __( 'business.address' ) . ':') !!}
+            { !! Form::textarea('address', null, ['class' => 'form-control', 'placeholder' => __( 'business.address'), 'rows' => 3 ]); !!}
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="form-group">
-          {!! Form::label('cmmsn_percent', __( 'lang_v1.cmmsn_percent' ) . ':') !!}
-            {!! Form::number('cmmsn_percent', null, ['class' => 'form-control', 'placeholder' => __( 'lang_v1.cmmsn_percent' ), 'step' => 0.01, 'required' ]); !!}
+          { !! Form::label('cmmsn_percent', __( 'lang_v1.cmmsn_percent' ) . ':') !!}
+            { !! Form::number('cmmsn_percent', null, ['class' => 'form-control', 'placeholder' => __( 'lang_v1.cmmsn_percent' ), 'step' => 0.01, 'required' ]); !!}
         </div>
       </div>
 
       </div>
     </div>
-
+  -->
     <div class="modal-footer">
       <button type="submit" class="btn btn-primary">@lang( 'messages.save' )</button>
       <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'messages.close' )</button>

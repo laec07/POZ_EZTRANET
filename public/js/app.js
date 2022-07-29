@@ -1442,8 +1442,8 @@ $(document).ready(function(){
                        {"data":"full_name"},
                        {"data":"email"},
                        {"data":"contact_no"},
-                       {"data":"address"},
-                       {"data":"cmmsn_percent"},
+                       //{"data":"address"},
+                       //{"data":"cmmsn_percent"},
                        {"data":"action"}
   
                     ]

@@ -35,8 +35,10 @@
                     				<th>@lang( 'user.name' )</th>
                     				<th>@lang( 'business.email' )</th>
                                     <th>@lang( 'lang_v1.contact_no' )</th>
-                                    <th>@lang( 'business.address' )</th>
-                                    <th>@lang( 'lang_v1.cmmsn_percent' )</th>
+                                    <!-- Se quita campos para que funcione como centro de costo laec 2022
+                                    <th>@ lang( 'business.address' )</th>
+                                    <th>@ lang( 'lang_v1.cmmsn_percent' )</th>
+                                    -->
                     				<th>@lang( 'messages.action' )</th>
                     			</tr>
                     		</thead>

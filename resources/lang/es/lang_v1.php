@@ -1,18 +1,18 @@
 <?php 
 return [
 	"enable_editing_product_from_purchase" => "Habilitar la edición del precio del producto desde la pantalla de compra", 
-	"sales_commission_agent" => "Centro costo", /* modified */ 
-	"sales_commission_agents" => "Centro de costos", /* modified */ 
+	"sales_commission_agent" => "Cuenta contable", /* modified */ 
+	"sales_commission_agents" => "Cuentas contables", /* modified */ 
 	"disable" => "Inhabilitar", 
 	"logged_in_user" => "Usuario conectado", 
 	"select_from_users_list" => "Seleccionar de la lista de usuarios", 
-	"select_from_commisssion_agents_list" => "Seleccione de la lista de Centro de costos", /* modified */ 
-	"add_sales_commission_agent" => "Agregar Centro costo", /* modified */
-	"commission_agent_added_success" => "Centro costo agregado con éxito", /* modified */
-	"edit_sales_commission_agent" => "Editar Centro costo", /* modified */
-	"commission_agent_updated_success" => "Centro costo actualizado con éxito", /* modified */
-	"commission_agent_deleted_success" => "Centro costo eliminado con éxito", /* modified */
-	"contact_no" => "Contacto No.", 
+	"select_from_commisssion_agents_list" => "Seleccione de la lista de Cuentas contables", /* modified */ 
+	"add_sales_commission_agent" => "Agregar Cuenta contable", /* modified */
+	"commission_agent_added_success" => "Cuenta contable agregado con éxito", /* modified */
+	"edit_sales_commission_agent" => "Editar Cuenta contable", /* modified */
+	"commission_agent_updated_success" => "Cuenta contable actualizado con éxito", /* modified */
+	"commission_agent_deleted_success" => "Cuenta contable eliminado con éxito", /* modified */
+	"contact_no" => "Cuenta No.", 
 	"commission_agent" => "Centro de costo", 
 	'cmmsn_percent' => 'Porcentaje de la Comisión de Requisiciónes (%)', 
 	"sales_added" => "Requisiciónes agregadas", 
