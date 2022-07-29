@@ -89,9 +89,15 @@
                             id="product_sell_report_table">
                                 <thead>
                                     <tr>
-                                        <th>@lang('sale.product')</th>
-                                        <th>@lang('sale.customer_name')</th>
                                         <th>@lang('sale.invoice_no')</th>
+                                        <th>SKU</th>
+                                        <th>@lang('sale.product')</th>
+                                        <th>@lang('product.category')</th>
+                                        <th>@lang('sale.customer_name')</th>
+                                        <th>@lang( 'lang_v1.contact_no' )</th>
+                                        
+                                        <th>@lang( 'user.name' ) Cuenta</th>
+                                        <th>@lang( 'business.email' )</th>
                                         <th>@lang('messages.date')</th>
                                         <th>@lang('sale.qty')</th>
                                         <th>@lang('sale.unit_price')</th>
@@ -103,7 +109,7 @@
                                 </thead>
                                 <tfoot>
                                     <tr class="bg-gray font-17 footer-total text-center">
-                                        <td colspan="4"><strong>@lang('sale.total'):</strong></td>
+                                        <td colspan="9"><strong>@lang('sale.total'):</strong></td>
                                         <td id="footer_total_sold"></td>
                                         <td></td>
                                         <td></td>

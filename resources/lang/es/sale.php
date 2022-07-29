@@ -31,8 +31,8 @@
 "discount_amount" => "Importe de descuento",
 "no_recent_transactions" => "Sin transacciones recientes",
 "final" => "Final",
-"invoice_no" => "Factura no.",
-"customer_name" => "Nombre del cliente",
+"invoice_no" => "Requisicion no.",
+"customer_name" => "Responsable",
 "payment_status" => "Estado de pago",
 "status" => "Estado",
 "total_amount" => "Cantidad total",
@@ -55,5 +55,5 @@
 "finalize_payment" => "Finalizar el pago", 
 "sale_date" => "Fecha de Requisicion", 
 "list_pos" => "Lista POS", 
-"edit_sale" => "Editar Requisicion", 
+"edit_sale" => "Editar Requisicion",
 ];

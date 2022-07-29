@@ -1407,18 +1407,25 @@ class ReportController extends Controller
                 ->join('product_variations as pv', 'v.product_variation_id', '=', 'pv.id')
                 ->join('contacts as c', 't.contact_id', '=', 'c.id')
                 ->join('products as p', 'pv.product_id', '=', 'p.id')
+                ->leftjoin('categories as ct','p.category_id','=','ct.id')
                 ->leftjoin('tax_rates', 'transaction_sell_lines.tax_id', '=', 'tax_rates.id')
                 ->leftjoin('units as u', 'p.unit_id', '=', 'u.id')
+                ->leftjoin('users as us', 't.commission_agent', '=', 'us.id')
                 ->where('t.business_id', $business_id)
                 ->where('t.type', 'sell')
                 ->select(
                     'p.name as product_name',
+                    'p.sku',
+                    'ct.name as category',
                     'p.type as product_type',
                     'pv.name as product_variation',
                     'v.name as variation_name',
                     'c.name as customer',
                     't.id as transaction_id',
                     't.invoice_no',
+                    'us.contact_no as no_cuenta',
+                    'us.last_name as descrip_cuenta',
+                    'us.email as centro_costo',
                     't.transaction_date as transaction_date',
                     'transaction_sell_lines.unit_price_before_discount as unit_price',
                     'transaction_sell_lines.unit_price_inc_tax as unit_sale_price',
@@ -1457,13 +1464,28 @@ class ReportController extends Controller
             }
 
             return Datatables::of($query)
+                ->editColumn('sku', function ($row) {
+                    return  $row->sku ;
+                })
                 ->editColumn('product_name', function ($row) {
-                    $product_name = $row->product_name;
+                    $product_name =$row->sku.' - '.$row->product_name;
                     if ($row->product_type == 'variable') {
                         $product_name .= ' - ' . $row->product_variation . ' - ' . $row->variation_name;
                     }
 
                     return $product_name;
+                })
+                ->editColumn('category', function ($row) {
+                    return  $row->category ;
+                })
+                ->editColumn('no_cuenta', function ($row) {
+                    return  $row->no_cuenta ;
+                })
+                ->editColumn('descrip_cuenta', function ($row) {
+                    return  $row->descrip_cuenta ;
+                })
+                ->editColumn('centro_costo', function ($row) {
+                    return  $row->centro_costo ;
                 })
                  ->editColumn('invoice_no', function ($row) {
                     return '<a data-href="' . action('SellController@show', [$row->transaction_id])

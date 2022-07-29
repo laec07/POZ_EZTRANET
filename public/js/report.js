@@ -541,9 +541,14 @@ $(document).ready( function(){
             }
         },
         columns: [
-            { data: 'product_name', name: 'p.name'  },
-            { data: 'customer', name: 'c.name'  },
             { data: 'invoice_no', name: 't.invoice_no'  },
+            { data: 'sku', name: 'p.sku'  },
+            { data: 'product_name', name: 'p.name'  },
+            { data: 'category', name: 'ct.name'  },
+            { data: 'customer', name: 'c.name'  },
+            { data: 'no_cuenta', name: 'us.contact_no'  },
+            { data: 'descrip_cuenta', name: 'us.last_name'  },
+            { data: 'centro_costo', name: 'us.email'  },
             { data: 'transaction_date', name: 't.transaction_date'},
             { data: 'sell_qty', name: 'transaction_sell_lines.quantity'},
             { data: 'unit_price', name: 'transaction_sell_lines.unit_price_before_discount' },
