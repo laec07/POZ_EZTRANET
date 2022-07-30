@@ -1302,11 +1302,15 @@ class ReportController extends Controller
                     ->join('product_variations as pv', 'v.product_variation_id', '=', 'pv.id')
                     ->join('contacts as c', 't.contact_id', '=', 'c.id')
                     ->join('products as p', 'pv.product_id', '=', 'p.id')
+                    ->leftjoin('categories as ct','p.category_id','=','ct.id')
                     ->leftjoin('units as u', 'p.unit_id', '=', 'u.id')
                     ->where('t.business_id', $business_id)
                     ->where('t.type', 'purchase')
                     ->select(
                         'p.name as product_name',
+                        'p.sku',
+                        'ct.name as category',
+                        'c.contact_id as id_supplier',
                         'p.type as product_type',
                         'pv.name as product_variation',
                         'v.name as variation_name',
@@ -1345,6 +1349,12 @@ class ReportController extends Controller
             }
 
             return Datatables::of($query)
+                ->editColumn('sku', function ($row) {
+                    return  $row->sku ;
+                })
+                ->editColumn('contact_id', function ($row) {
+                    return  $row->id_supplier ;
+                })
                 ->editColumn('product_name', function ($row) {
                     $product_name = $row->product_name;
                     if ($row->product_type == 'variable') {
@@ -1360,6 +1370,9 @@ class ReportController extends Controller
                  ->editColumn('purchase_qty', function ($row) {
                     return '<span class="display_currency purchase_qty" data-currency_symbol=false data-orig-value="' . (float)$row->purchase_qty . '" data-unit="' . $row->unit . '" >' . (float) $row->purchase_qty . '</span> ' . $row->unit;
                  })
+                 ->editColumn('category', function ($row) {
+                    return  $row->category ;
+                })
                  ->editColumn('subtotal', function ($row) {
                     return '<span class="display_currency row_subtotal" data-currency_symbol=true data-orig-value="' . $row->subtotal . '">' . $row->subtotal . '</span>';
                  })
@@ -1477,7 +1490,7 @@ class ReportController extends Controller
                 })
                 ->editColumn('category', function ($row) {
                     return  $row->category ;
-                })
+                }) 
                 ->editColumn('no_cuenta', function ($row) {
                     return  $row->no_cuenta ;
                 })

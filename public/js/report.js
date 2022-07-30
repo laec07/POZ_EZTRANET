@@ -453,11 +453,14 @@ $(document).ready( function(){
             }
         },
         columns: [
-            { data: 'product_name', name: 'p.name'  },
-            { data: 'supplier', name: 'c.name'  },
             { data: 'ref_no', name: 't.ref_no'  },
             { data: 'transaction_date', name: 't.transaction_date'},
+            { data: 'id_supplier', name: 'contact_id'  },
+            { data: 'supplier', name: 'c.name'  },
+            { data: 'sku', name: 'sku'  },
+            { data: 'product_name', name: 'p.name'  },
             { data: 'purchase_qty', name: 'purchase_lines.quantity'},
+            { data: 'category', name: 'ct.name'  },
             { data: 'unit_purchase_price', name: 'purchase_lines.purchase_price_inc_tax' },
             { data: 'subtotal', name: 'subtotal', searchable: false}
         

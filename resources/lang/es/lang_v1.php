@@ -527,5 +527,8 @@ return [
 "autosend_sms" => "Auto enviar SMS", 
 "enable_selected_contacts" => "Restringir contactos seleccionados", 
 "tooltip_enable_selected_contacts" => "Restrinja el acceso a los contactos seleccionados en el cuadro de búsqueda vendedor / compra cliente / proveedor", 
-"selected_contacts" => "Seleccionar Contactos", 
+"selected_contacts" => "Seleccionar Contactos",
+"username_help" => "Dejar en blanco para auto generarlo",
+"status_for_user" => "Activo?",
+"tooltip_enable_user_active" => "Marcar/Desmarcar para Activar/Desactivar usuario"
 ];

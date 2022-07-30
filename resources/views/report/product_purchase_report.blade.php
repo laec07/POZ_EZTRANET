@@ -79,19 +79,23 @@
                     id="product_purchase_report_table">
                         <thead>
                             <tr>
-                                <th>@lang('sale.product')</th>
-                                <th>@lang('purchase.supplier')</th>
                                 <th>@lang('purchase.ref_no')</th>
                                 <th>@lang('messages.date')</th>
+                                <th>@lang('RTN')</th>
+                                <th>@lang('purchase.supplier')</th>
+                                <th>SKU</th>
+                                <th>@lang('sale.product')</th>
                                 <th>@lang('sale.qty')</th>
+                                <th>@lang('product.category')</th>
                                 <th>@lang('lang_v1.unit_perchase_price')</th>
                                 <th>@lang('sale.subtotal')</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr class="bg-gray font-17 footer-total text-center">
-                                <td colspan="4"><strong>@lang('sale.total'):</strong></td>
+                                <td colspan="6"><strong>@lang('sale.total'):</strong></td>
                                 <td id="footer_total_purchase"></td>
+                                <td></td>
                                 <td></td>
                                 <td><span class="display_currency" id="footer_subtotal" data-currency_symbol ="true"></span></td>
                             </tr>
