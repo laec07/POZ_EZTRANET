@@ -69,6 +69,7 @@
                             <tr>
                                 <th>SKU</th>
                                 <th>@lang('business.product')</th>
+                                <th>@lang('category.category')</th>
                                 <th>@lang('sale.unit_price')</th>
                                 <th>@lang('report.current_stock')</th>
                                 <th>@lang('report.total_unit_sold')</th>
@@ -86,6 +87,7 @@
                                 <td id="footer_total_transfered"></td>
                                 <td id="footer_total_adjusted"></td>
                                 <td id="footer_unit_purchase"></td>
+                                <td></td>
                                 <td id="footer_total_purchase"></td>
                             </tr>
                         </tfoot>

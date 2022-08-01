@@ -336,6 +336,7 @@ class ReportController extends Controller
                     ->leftjoin('units', 'p.unit_id', '=', 'units.id')
                     ->leftjoin('variation_location_details as vld', 'variations.id', '=', 'vld.variation_id')
                     ->leftjoin('product_variations as pv', 'variations.product_variation_id', '=', 'pv.id')
+                    ->leftjoin('categories as ct', 'p.category_id', '=', 'ct.id')
                     ->where('p.business_id', $business_id)
                     ->whereIn('p.type', ['single', 'variable']);
 
@@ -394,6 +395,7 @@ class ReportController extends Controller
                 'variations.sub_sku as sku',
                 'p.name as product',
                 'p.type',
+                'ct.name as category_name',
                 'p.id as product_id',
                 'units.short_name as unit',
                 'p.enable_stock as enable_stock',
@@ -419,13 +421,17 @@ class ReportController extends Controller
                     }
                     return $name;
                 })
+                ->editColumn('category_name', function ($row) {
+
+                    return $row->category_name;
+                })
                 ->editColumn('purchase_price', function ($row) {
                     $purchase_price = 0;
                     if ($row->purchase_price) {
                         $purchase_price =  (float)$row->purchase_price;
                     }
 
-                    return '<span class="display_currency purchase_price" data-currency_symbol=true data-unit="Q"  data-orig-value="' . $purchase_price . '"  >' . $purchase_price . '</span> ' ;
+                    return '<span class="display_currency purchase_price" data-currency_symbol=true   data-unit="L" data-orig-value="' . $purchase_price . '"  >' . $purchase_price . '</span> ' ;
                 })
                 ->editColumn('unit_purchase_price', function ($row) {
                     $name = $row->unit_purchase_price;

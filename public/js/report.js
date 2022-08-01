@@ -56,13 +56,14 @@ $(document).ready( function(){
                             columns: [
                                 {data: 'sku', name: 'variations.sub_sku'},
                                 {data: 'product', name: 'p.name'},
+                                {data: 'category_name', name: 'ct.name'},
                                 {data: 'unit_price', name: 'variations.sell_price_inc_tax'},
                                 {data: 'stock', name: 'stock', searchable: false},
                                 {data: 'total_sold', name: 'total_sold', searchable: false},
                                 {data: 'total_transfered', name: 'total_transfered', searchable: false},
                                 {data: 'total_adjusted', name: 'total_adjusted', searchable: false},
                                 {data: 'unit_purchase_price', name: 'unit_purchase_price', searchable: false},
-                                {data: 'purchase_price', name: 'purchase_price', searchable: false}
+                                {data: 'purchase_price', name: 'purchase_price'}
                             ],
                             "fnDrawCallback": function (oSettings) {
                                 $('#footer_total_stock').html(__sum_stock($('#stock_report_table'), 'current_stock'));
