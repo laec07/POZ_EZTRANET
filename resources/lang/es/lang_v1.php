@@ -530,5 +530,7 @@ return [
 "selected_contacts" => "Seleccionar Contactos",
 "username_help" => "Dejar en blanco para auto generarlo",
 "status_for_user" => "Activo?",
-"tooltip_enable_user_active" => "Marcar/Desmarcar para Activar/Desactivar usuario"
+"tooltip_enable_user_active" => "Marcar/Desmarcar para Activar/Desactivar usuario",
+"unit_purchase_price" => "Precio compra unitario",
+"total_purchase_price" => "Total precio compra"
 ];
