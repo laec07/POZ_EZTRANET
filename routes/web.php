@@ -15,7 +15,7 @@ DB::listen(function($query){
   //Imprimimos la consulta ejecutada
   echo "<pre> {$query->sql } </pre>";
 });
-*/
+/*/
 include_once('install_r.php');
 
 Route::middleware(['IsInstalled'])->group(function () {
