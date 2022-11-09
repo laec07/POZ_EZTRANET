@@ -172,7 +172,11 @@ class SellPosController extends Controller
         $brands->prepend(__('lang_v1.all_brands'), 'all');
 
         $change_return = $this->dummyPaymentLine;
-
+// Pasar Rol a Pos para ferreteria
+        $user_id = request()->session()->get('user.id');
+        $users=explode("#", User::find($user_id)->getRoleNames()[0], 2)[0];
+        //dd($users);
+//        
         $types = [];
         if (auth()->user()->can('supplier.create')) {
             $types['supplier'] = __('report.supplier');
@@ -209,7 +213,8 @@ class SellPosController extends Controller
                 'types',
                 'customer_groups',
                 'accounts',
-                'price_groups'
+                'price_groups',
+                'users'
             ));
     }
 
@@ -303,8 +308,10 @@ class SellPosController extends Controller
                 $input['customer_group_id'] = (empty($cg) || empty($cg->id)) ? null : $cg->id;
 
                 //set selling price group id
+                
                 if ($request->has('price_group')) {
                     $input['selling_price_group_id'] = $request->input('price_group');
+                   
                 }
 
                 $input['is_suspend'] = isset($input['is_suspend']) && 1 == $input['is_suspend']  ? 1 : 0;
