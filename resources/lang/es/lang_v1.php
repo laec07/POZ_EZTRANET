@@ -274,8 +274,8 @@ return [
    'time_format' => 'Formato de tiempo',
    '12_hour' => '12 horas',
    '24_hour' => '24 horas',
-   "list_quotations" => "Lista de citas", 
-	"list_drafts" => "List Drafts", 
+   "list_quotations" => "Autorizar ventas", 
+	"list_drafts" => "Lista Borradores", 
 	"you_cannot_delete_this_contact" => "No se puede eliminar el contacto: las transacciones ya existen para el contacto", 
 	"enable_row" => "Habilitar fila", 
 	"enable_position" => "Activar posición", 
@@ -530,4 +530,5 @@ return [
 "selected_contacts" => "Seleccionar Contactos", 
 "autori" => "Necesita autorización?",
 "enable_autori_help" => "Indica previa autorizacion de la venta",
+"edit_pay" => "Pagar",
 ];

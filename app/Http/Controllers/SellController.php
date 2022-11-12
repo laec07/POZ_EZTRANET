@@ -187,11 +187,11 @@ class SellController extends Controller
                     @endif
                     @if($is_direct_sale == 0)
                         @can("sell.update")
-                        <li><a target="_blank" href="{{action(\'SellPosController@edit\', [$id])}}"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
+                        <li><a target="_blank" href="{{action(\'SellPosController@edit\', [$id])}}"><i class="fa fa-money"></i> @lang("lang_v1.edit_pay")</a></li>
                         @endcan
                         @else
                         @can("direct_sell.access")
-                            <li><a target="_blank" href="{{action(\'SellController@edit\', [$id])}}"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
+                            <li><a target="_blank" href="{{action(\'SellController@edit\', [$id])}}"><i class="fa fa-money"></i> @lang("lang_v1.edit_pay")</a></li>
                         @endcan
                     @endif
                     @can("sell.delete")
@@ -641,9 +641,9 @@ class SellController extends Controller
                     '<a href="#" data-href="{{action(\'SellController@show\', [$id])}}" class="btn btn-xs btn-success btn-modal" data-container=".view_modal"><i class="fa fa-external-link" aria-hidden="true"></i> @lang("messages.view")</a>
                     &nbsp;
                     @if($is_direct_sale == 1)
-                        <a target="_blank" href="{{action(\'SellController@edit\', [$id])}}" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>  @lang("messages.edit")</a>
+                        <a target="_blank" href="{{action(\'SellController@edit\', [$id])}}" class="btn btn-xs btn-primary"><i class="fa fa-money"></i>  @lang("lang_v1.edit_pay")</a>
                     @else
-                    <a target="_blank" href="{{action(\'SellPosController@edit\', [$id])}}" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>  @lang("messages.edit")</a>
+                    <a target="_blank" href="{{action(\'SellPosController@edit\', [$id])}}" class="btn btn-xs btn-primary"><i class="fa fa-money"></i>  @lang("lang_v1.edit_pay")</a>
                     @endif
 
                     &nbsp; 

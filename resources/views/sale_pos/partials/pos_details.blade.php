@@ -100,7 +100,7 @@
 									id="pos-draft">@lang('sale.draft')</button>
 
 								<button type="button" 
-									class="btn btn-info btn-block btn-flat @if($users == 'CajeroF') hide @endif" 
+									class="btn btn-info btn-block btn-flat @if($users == 'CajeroF' or $users == 'VendedorF') hide @endif" 
 									id="pos-quotation">@lang('lang_v1.quotation')</button>
 							</div>
 							<div class="col-sm-3 col-xs-6 col-2px-padding">
