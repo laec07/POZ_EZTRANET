@@ -10,7 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-/*
+/*/
 DB::listen(function($query){
   //Imprimimos la consulta ejecutada
   echo "<pre> {$query->sql } </pre>";

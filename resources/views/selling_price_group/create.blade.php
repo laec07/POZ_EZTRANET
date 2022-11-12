@@ -18,6 +18,13 @@
         {!! Form::label('description', __( 'lang_v1.description' ) . ':') !!}
           {!! Form::textarea('description', null, ['class' => 'form-control','placeholder' => __( 'lang_v1.description' ), 'rows' => 3]); !!}
       </div>
+      
+      <div class="form-group">
+        <div class="checkbox">
+          <label>
+             {!! Form::checkbox('autori', 1, false,[ 'class' => 'input-icheck', 'id' => 'autori' ]); !!} @lang( 'lang_v1.autori' )
+          </label>
+        </div>
     </div>
 
     <div class="modal-footer">

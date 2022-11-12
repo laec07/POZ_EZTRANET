@@ -24,18 +24,26 @@ class SellingPriceGroupController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $price_groups = SellingPriceGroup::where('business_id', $business_id)
-                        ->select(['name', 'description', 'id']);
-
+                        ->select(['name', 'description','autori', 'id']);
             return Datatables::of($price_groups)
+
                 ->addColumn(
                     'action',
                     '<button data-href="{{action(\'SellingPriceGroupController@edit\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container=".view_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
                         &nbsp;
                         <button data-href="{{action(\'SellingPriceGroupController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_spg_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>'
                 )
+                ->editColumn('autori', function ($row) {
+                    if ($row->autori) {
+                        return __('messages.yes');
+                    } else {
+                        return __('messages.no');
+                    }
+                })
                 ->removeColumn('id')
-                ->rawColumns([2])
+                ->rawColumns([3])
                 ->make(false);
+                //DD($price_groups);
         }
 
         return view('selling_price_group.index');
@@ -68,12 +76,13 @@ class SellingPriceGroupController extends Controller
         }
 
         try {
-            $input = $request->only(['name', 'description']);
+            $input = $request->only(['name', 'description','autori']);
+            
             $business_id = $request->session()->get('user.business_id');
             $input['business_id'] = $business_id;
-
+            
             $spg = SellingPriceGroup::create($input);
-
+            
             //Create a new permission related to the created selling price group
             Permission::create(['name' => 'selling_price_group.' . $spg->id ]);
 
@@ -139,12 +148,16 @@ class SellingPriceGroupController extends Controller
 
         if (request()->ajax()) {
             try {
-                $input = $request->only(['name', 'description']);
+                $input = $request->only(['name', 'description','autori']);
                 $business_id = $request->session()->get('user.business_id');
-
+                if (empty($input['autori'])) {
+                    $input['autori']=0;
+                }
                 $spg = SellingPriceGroup::where('business_id', $business_id)->findOrFail($id);
                 $spg->name = $input['name'];
                 $spg->description = $input['description'];
+                $spg->autori = $input['autori'];
+                //dd($spg);
                 $spg->save();
 
                 $output = ['success' => true,

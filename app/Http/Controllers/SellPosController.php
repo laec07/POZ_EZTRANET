@@ -172,11 +172,10 @@ class SellPosController extends Controller
         $brands->prepend(__('lang_v1.all_brands'), 'all');
 
         $change_return = $this->dummyPaymentLine;
-// Pasar Rol a Pos para ferreteria
+        // Pasar Rol a Pos para ferreteria
         $user_id = request()->session()->get('user.id');
         $users=explode("#", User::find($user_id)->getRoleNames()[0], 2)[0];
-        //dd($users);
-//        
+
         $types = [];
         if (auth()->user()->can('supplier.create')) {
             $types['supplier'] = __('report.supplier');
@@ -306,7 +305,7 @@ class SellPosController extends Controller
                 $contact_id = $request->get('contact_id', null);
                 $cg = $this->contactUtil->getCustomerGroup($business_id, $contact_id);
                 $input['customer_group_id'] = (empty($cg) || empty($cg->id)) ? null : $cg->id;
-
+                
                 //set selling price group id
                 
                 if ($request->has('price_group')) {
@@ -314,6 +313,16 @@ class SellPosController extends Controller
                    
                 }
 
+                $price_sellPOS = SellingPriceGroup::where('business_id', $business_id)
+                ->where('id',$input['selling_price_group_id'] )
+                ->select([ 'autori'])
+                ->first();
+               
+
+                if($price_sellPOS->autori==1){
+                    $input['is_quotation'] = 1;
+                }
+                //dd($price_sellPOS);
                 $input['is_suspend'] = isset($input['is_suspend']) && 1 == $input['is_suspend']  ? 1 : 0;
                 if($input['is_suspend']) {
                     $input['sale_note'] = !empty($input['additional_notes']) ? $input['additional_notes'] : null;
@@ -688,14 +697,16 @@ class SellPosController extends Controller
             $types['both'] = __('lang_v1.both_supplier_customer');
         }
         $customer_groups = CustomerGroup::forDropdown($business_id);
-
+        // Pasar Rol a Pos para ferreteria
+        $user_id = request()->session()->get('user.id');
+        $users=explode("#", User::find($user_id)->getRoleNames()[0], 2)[0];
         //Accounts
         $accounts = $this->moduleUtil->accountsDropdown($business_id, true);
         //Selling Price Group Dropdown
         $price_groups = SellingPriceGroup::forDropdown($business_id);
-        
+        $users=explode("#", User::find($user_id)->getRoleNames()[0], 2)[0];
         return view('sale_pos.edit')
-            ->with(compact('business_details', 'taxes', 'payment_types', 'walk_in_customer', 'sell_details', 'transaction', 'payment_lines', 'location_printer_type', 'shortcuts', 'commission_agent', 'categories', 'pos_settings', 'change_return', 'types', 'customer_groups', 'brands', 'accounts', 'price_groups'));
+            ->with(compact('business_details', 'taxes', 'payment_types', 'walk_in_customer', 'sell_details', 'transaction', 'payment_lines', 'location_printer_type', 'shortcuts', 'commission_agent', 'categories', 'pos_settings', 'change_return', 'types', 'customer_groups', 'brands', 'accounts', 'price_groups','users'));
     }
 
     /**
