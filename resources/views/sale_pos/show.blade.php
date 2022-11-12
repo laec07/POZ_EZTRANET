@@ -273,6 +273,7 @@
     </div>
   </div>
   <div class="modal-footer">
+    <a href="#" class="print-invoice btn btn-danger" data-href="{{route('sell.AuthSell', [$sell->id])}}" data-dismiss="modal"><i class="fa fa-edit" aria-hidden="true"></i>Autrorizar</a>
     <a href="#" class="print-invoice btn btn-primary" data-href="{{route('sell.printInvoice', [$sell->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
       <button type="button" class="btn btn-default no-print" data-dismiss="modal">@lang( 'messages.close' )</button>
     </div>

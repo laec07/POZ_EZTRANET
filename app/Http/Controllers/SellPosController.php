@@ -1168,6 +1168,51 @@ class SellPosController extends Controller
         }
     }
 
+        /**
+     * Auth sell
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function AuthSell(Request $request, $transaction_id)
+    {
+        if (request()->ajax()) {
+            try {
+                $output = ['success' => 0,
+                        'msg' => trans("messages.something_went_wrong")
+                        ];
+
+                $business_id = $request->session()->get('user.business_id');
+    
+                //Begin transaction
+                DB::beginTransaction();        
+                $transaction = Transaction::where('business_id', $business_id)
+                                ->where('id', $transaction_id)
+                                ->update(['is_quotation' => 0]);
+
+              /*  if (empty($transaction)) {
+                    return $output;
+                }*/
+
+                
+
+               DB::commit();
+               $output = [
+                   'success' => true,
+                   'msg' => __('Venta Autorizada con éxito')
+               ];
+            } catch (\Exception $e) {
+                DB::rollBack();
+                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+                
+                $output = ['success' => 0,
+                        'msg' => trans("messages.something_went_wrong")
+                        ];
+            }
+
+            return redirect('sells/quotations')->with('status', $output);
+        }
+    }
     /**
      * Gives suggetion for product based on category
      *
