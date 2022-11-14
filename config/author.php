@@ -12,7 +12,7 @@ return [
     | IMPORTANT: CHANGING ANY OF THIS INFORMATION WILL UNSTABILIZE THE APPLICATION
     |
     */
-
+/*
     'vendor' => 'Ultimate Fosters',
 
     'vendor_url' => 'http://ultimatefosters.com',
@@ -23,4 +23,5 @@ return [
     'app_envato_personal_token' => 'ftXs1UtOgdtJFYo7ZcHHv46KH3PgLgch',
     'app_envato_username' => 'thewebfosters',
     'app_envato_product_code' => 21216332
+    */
 ];

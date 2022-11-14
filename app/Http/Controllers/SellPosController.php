@@ -312,16 +312,19 @@ class SellPosController extends Controller
                     $input['selling_price_group_id'] = $request->input('price_group');
                    
                 }
-
-                $price_sellPOS = SellingPriceGroup::where('business_id', $business_id)
-                ->where('id',$input['selling_price_group_id'] )
-                ->select([ 'autori'])
-                ->first();
-               
-
-                if($price_sellPOS->autori==1){
-                    $input['is_quotation'] = 1;
+                //Valido que traiga lista de precio y si trae, si necesita autorizacion, lo manda como oferta LAEC 102022
+                if($input['selling_price_group_id']!='0'){
+                    $price_sellPOS = SellingPriceGroup::where('business_id', $business_id)
+                    ->where('id',$input['selling_price_group_id'] )
+                    ->select([ 'autori'])
+                    ->first();
+                   
+    
+                    if($price_sellPOS->autori==1){
+                        $input['is_quotation'] = 1;
+                    }
                 }
+
                 //dd($price_sellPOS);
                 $input['is_suspend'] = isset($input['is_suspend']) && 1 == $input['is_suspend']  ? 1 : 0;
                 if($input['is_suspend']) {
