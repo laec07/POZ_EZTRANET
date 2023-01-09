@@ -960,8 +960,13 @@ class SellPosController extends Controller
                             ];
 
                         $this->transactionUtil->adjustMappingPurchaseSell('final', $transaction, $business, $deleted_sell_lines_ids);
-
-                        $transaction->delete();
+                       
+                       //Actualizar transacción para no borrarla LAEC
+                        $transaction = Transaction::where('business_id', $business_id)
+                        ->where('id', $id)
+                        ->update(['type' => 'sell_return'],['is_quotation' => 0]);
+                        //comentar linea para no borrar de sistema la venta
+                        //$transaction->delete();
                     }
                 }
                 DB::commit();
