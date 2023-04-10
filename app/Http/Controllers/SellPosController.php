@@ -37,6 +37,7 @@ use App\Category;
 use App\Brands;
 use App\Product;
 use App\CustomerGroup;
+use App\FelFacturas;
 use App\SellingPriceGroup;
 use App\NotificationTemplate;
 
@@ -387,8 +388,17 @@ class SellPosController extends Controller
                                 ];
                     $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
 
+                    // Llamado para generar XMLInfile LAEC
+                    $business_details = $this->businessUtil->getDetails($business_id);
+                    $location_details = BusinessLocation::find($input['location_id']);
+                    $invoice_layout = $this->businessUtil->invoiceLayout($business_id, $input['location_id'], $location_details->invoice_layout_id);
+                    
+                    $this->transactionUtil->GenerateXMLInfile($transaction->id,  $input['location_id'], $invoice_layout,$business_details, $location_details, 'printer');
+
                     //Auto send notification
                     $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
+
+
                 }
 
                 DB::commit();
@@ -482,6 +492,8 @@ class SellPosController extends Controller
 
         //Check if printing of invoice is enabled or not.
         if ($location_details->print_receipt_on_invoice == 1) {
+
+            
             //If enabled, get print type.
             $output['is_enabled'] = true;
 
@@ -491,7 +503,7 @@ class SellPosController extends Controller
             $receipt_printer_type = is_null($printer_type) ? $location_details->receipt_printer_type : $printer_type;
 
             $receipt_details = $this->transactionUtil->getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type);
-
+            //
             $receipt_details->currency = session('currency');
             
             //If print type browser - return the content, printer - return printer config data, and invoice format config
