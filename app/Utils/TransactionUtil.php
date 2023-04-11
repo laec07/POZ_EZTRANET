@@ -786,6 +786,8 @@ class TransactionUtil extends Util
                 $felfac->estado ='CERT';
                 $felfac->numeroautorizacion =$resultado->uuid;
                 $felfac->fechacertificacion =$Fecha;
+                $felfac->numerofel =$resultado->numero;
+                $felfac->seriefel =$resultado->serie;
                 $felfac->save();
 
                 return $resultado->uuid;
