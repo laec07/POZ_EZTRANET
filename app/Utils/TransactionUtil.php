@@ -593,6 +593,7 @@ class TransactionUtil extends Util
         $Corr=1;
         $impuestoTotal=0;
         $impuesto=0;
+        $identificador = $business_details->id.$transaction_id.$transaction->invoice_no;
         //Generar XML
             $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
             <dte:GTDocumento xmlns:dte="http://www.sat.gob.gt/dte/fel/0.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="0.1" xsi:schemaLocation="http://www.sat.gob.gt/dte/fel/0.2.0"></dte:GTDocumento>');
@@ -627,7 +628,7 @@ class TransactionUtil extends Util
             $dte_DireccionEmisor->addChild('Pais', 'GT');
             // SAT -> DTE -> DatosEmision -> Receptor
             $dte_Receptor = $dte_DatosEmision->addChild('dte:Receptor');
-            $dte_Receptor->addAttribute('CorreoReceptor', $customer->email);
+            $dte_Receptor->addAttribute('CorreoReceptor', $customer->email.';'.$location_details->email);
             $dte_Receptor->addAttribute('IDReceptor', $customer->contact_id);
             $dte_Receptor->addAttribute('NombreReceptor', $customer->name);
             // SAT -> DTE -> DatosEmision -> Receptor -> DireccionReceptor
@@ -666,13 +667,17 @@ class TransactionUtil extends Util
             // SAT -> DTE -> DatosEmision -> Items -> Item -> Impuestos -> Impuesto
             $dte_Impuesto = $dte_Impuestos->addChild('dte:Impuesto');
             $dte_Impuesto->addChild('NombreCorto', 'IVA');
-            $dte_Impuesto->addChild('CodigoUnidadGravable', '11220');
-            $dte_Impuesto->addChild('MontoGravable', $line['line_total']- ($impuesto*$line['quantity']));
-            $dte_Impuesto->addChild('MontoImpuesto', $impuesto*$line['quantity']);
+            $dte_Impuesto->addChild('CodigoUnidadGravable', '1');
+           // $dte_Impuesto->addChild('MontoGravable', number_format($line['line_total']- ($impuesto*$line['quantity']),2));
+           // $dte_Impuesto->addChild('MontoImpuesto', $impuesto*$line['quantity']);
+            $montoGravable=($line['line_total']-$line['line_discount'])/1.12;
+            $MontoImpuesto =$line['line_total']-$montoGravable;
+            $dte_Impuesto->addChild('MontoGravable', number_format($montoGravable,4));
+            $dte_Impuesto->addChild('MontoImpuesto', number_format($MontoImpuesto,4));
             // SAT -> DTE -> DatosEmision -> Items -> Item -> Total
             $dte_Item->addChild('Total', $line['line_total']);
             $Corr++;
-            $impuestoTotal=$impuestoTotal+($impuesto*$line['quantity']);
+            $impuestoTotal=$impuestoTotal+$MontoImpuesto;
         }//finaliza detalle de producto
             // SAT -> DTE -> DatosEmision -> Totales
             $dte_Totales = $dte_DatosEmision->addChild('dte:Totales');
@@ -681,13 +686,13 @@ class TransactionUtil extends Util
             // SAT -> DTE -> DatosEmision -> Totales -> TotalImpuestos -> TotalImpuesto 
             $dte_TotalImpuesto = $dte_TotalImpuestos->addChild('dte:TotalImpuesto');
             $dte_TotalImpuesto->addAttribute('NombreCorto', 'IVA');
-            $dte_TotalImpuesto->addAttribute('TotalMontoImpuesto', $impuestoTotal);
+            $dte_TotalImpuesto->addAttribute('TotalMontoImpuesto', number_format($impuestoTotal,4));
             // SAT -> DTE -> DatosEmision -> Totales -> GranTotal  
             $dte_Totales->addChild('GranTotal', $transaction->final_total );
             // SAT -> DTE
             $dte_Adenda = $dte_SAT->addChild('dte:Adenda');
             $dte_Adenda->addChild('Vendedor', 'Luis');
-            $dte_Adenda->addChild('NumInterno', $transaction->invoice_no);
+            $dte_Adenda->addChild('NumInterno',$identificador);
             
    
         // Convertir el XML en una cadena
@@ -702,7 +707,7 @@ class TransactionUtil extends Util
                             'form_params' => [
                                 'llave' => '1f580f2213070c2642c0fbd7dda6d6e0',
                                 'archivo' => $archivo,
-                                'codigo' => $transaction->invoice_no,
+                                'codigo' => $identificador,
                                 'alias' => '40392880',
                                 'es_anulacion' => 'N'
 
@@ -718,25 +723,30 @@ class TransactionUtil extends Util
             $data->resultado;
             $data->descripcion;
             $data->archivo;
-            //Creamos el registro en la tabla FelFacturas
-            $felfac= FelFacturas::create([
-                'id_transaction' => $transaction_id,
-                'bussines_id' => $location_id,
-                'invoice_no' => $transaction->invoice_no,
-                'fel_firmado' =>$data->archivo,
-                'estado' =>'FIRM',
-            ]);
-            //obtenemos el ID del registro para actualizarlo
-            $felfac = FelFacturas::find($felfac->id);
             
             //Validar si existe error en respuesta certificador
             if($data->resultado=='true'){
                 //validación si respuesta es correcta
+                        //Creamos el registro en la tabla FelFacturas
+                        $felfac= FelFacturas::create([
+                            'id_transaction' => $transaction_id,
+                            'bussines_id' => $location_id,
+                            'invoice_no' => $transaction->invoice_no,
+                            'fel_firmado' =>$data->archivo,
+                            'no_acceso' => $identificador,
+                            'nitreceptor' => $customer->contact_id,
+                            'estado' =>'FIRM',
+                        ]);
+                        //obtenemos el ID del registro para actualizarlo
+                        $felfac = FelFacturas::find($felfac->id);
                     // Guardar el XML firmado en un archivo
-                    $file2 = 'file'.$transaction_id.'Firmado.xml';
-                    file_put_contents($file2, $data->archivo);
+                    //$file2 = 'file_fel/'.$transaction_id.'Firmado.xml';
+                    //file_put_contents($file2, $body);
             }else{
                 //validación si respuesta es incorrecta
+                # Accion si ocurre un error
+                $fileError3 = 'file_fel/Firm'.$transaction_id.'Error.txt';
+                file_put_contents($fileError3, $data->resultado);
                 throw new PurchaseSellMismatch("Error al firmar documento ".$data->descripcion);
                 
             }
@@ -753,7 +763,7 @@ class TransactionUtil extends Util
                 'Content-Type' => 'application/json',
                 'usuario'=> '40392880',
                 'llave'=> '2BB07EADC6857A6DA9012985C3B2C288',
-                'identificador'=> 'PRUEBA12345'
+                'identificador'=> $identificador
             ],
             'json' => [
                 'nit_emisor' => '40392880',
@@ -771,15 +781,21 @@ class TransactionUtil extends Util
             if ($resultado->resultado=='true') {
                 # Acción si es correcto
                 // Guardar el XML Certificado en bd
+                
                 $felfac->fel_certificado=$resultado->xml_certificado;
                 $felfac->estado ='CERT';
+                $felfac->numeroautorizacion =$resultado->uuid;
+                $felfac->fechacertificacion =$Fecha;
                 $felfac->save();
+
+                return $resultado->uuid;
                 // Guardar el XML Certificado en un archivo
                 //$file3 = 'file'.$transaction_id.'Certificado.xml';
                 //file_put_contents($file3, $resultado->xml_certificado);
+               
             }else{
                 # Accion si ocurre un error
-                $fileError3 = 'file'.$transaction_id.'Error.txt';
+                $fileError3 = 'file_fel/Cert'.$transaction_id.'Error.txt';
                 file_put_contents($fileError3, $resultadoj);
                 throw new PurchaseSellMismatch("Error al Certificar documento con SAT".$resultado->descripcion);
             }
@@ -791,16 +807,9 @@ class TransactionUtil extends Util
             throw new PurchaseSellMismatch("Error al Certificar documento con SAT".$estado);
         }
 
-    // Guardar el XML en un archivo
+    // Guardar el XML en un archivo, descomentar para guardar XML generado sin firma ni cert
     // $file = 'file'.$transaction_id.'SinFirma.xml';
     // file_put_contents($file, $xmlString);
-
-
-
-
-
-
-
     }
     /**
      * Gives the receipt details in proper format.

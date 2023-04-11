@@ -389,11 +389,13 @@ class SellPosController extends Controller
                     $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
 
                     // Llamado para generar XMLInfile LAEC
+                    //Detalles empresa
                     $business_details = $this->businessUtil->getDetails($business_id);
                     $location_details = BusinessLocation::find($input['location_id']);
+                    //detalle factura
                     $invoice_layout = $this->businessUtil->invoiceLayout($business_id, $input['location_id'], $location_details->invoice_layout_id);
-                    
-                    $this->transactionUtil->GenerateXMLInfile($transaction->id,  $input['location_id'], $invoice_layout,$business_details, $location_details, 'printer');
+                    //Generacion XML y Certificacion de facturas
+                    $felauth=$this->transactionUtil->GenerateXMLInfile($transaction->id,  $input['location_id'], $invoice_layout,$business_details, $location_details, 'printer');
 
                     //Auto send notification
                     $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
@@ -423,7 +425,7 @@ class SellPosController extends Controller
                     }
                 }
 
-                $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt ];
+                $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt, 'felauth' => $felauth ];
             } else {
                 $output = ['success' => 0,
                             'msg' => trans("messages.something_went_wrong")
@@ -517,7 +519,6 @@ class SellPosController extends Controller
                 $output['html_content'] = view($layout, compact('receipt_details'))->render();
             }
         }
-        
         return $output;
     }
 
