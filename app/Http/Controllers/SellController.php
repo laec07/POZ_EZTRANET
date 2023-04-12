@@ -11,6 +11,7 @@ use App\TransactionSellLine;
 use App\User;
 use App\CustomerGroup;
 use App\SellingPriceGroup;
+use App\FelFacturas; // laec tabla fel
 use Yajra\DataTables\Facades\DataTables;
 use DB;
 
@@ -75,6 +76,12 @@ class SellController extends Controller
                     '=',
                     'SR.return_parent_id'
                 )
+                ->leftJoin(
+                    'fel_facturas AS fel',
+                    'transactions.id',
+                    '=',
+                    'fel.id_transaction'
+                )
                 ->where('transactions.business_id', $business_id)
                 ->where('transactions.type', 'sell')
                 ->where('transactions.status', 'final')
@@ -83,6 +90,7 @@ class SellController extends Controller
                     'transactions.transaction_date',
                     'transactions.is_direct_sale',
                     'transactions.invoice_no',
+                    'fel.numerofel',
                     'contacts.name',
                     'transactions.payment_status',
                     'transactions.final_total',
@@ -195,7 +203,7 @@ class SellController extends Controller
                         @endcan
                     @endif
                     @can("sell.delete")
-                    <li><a href="{{action(\'SellPosController@destroy\', [$id])}}" class="delete-sale"><i class="fa fa-trash"></i> @lang("messages.delete")</a></li>
+                   <!-- <li><a href="{{action(\'SellPosController@destroy\', [$id])}}" class="delete-sale"><i class="fa fa-trash"></i> @lang("messages.delete")</a></li>-->
                     @endcan
 
                     @if(auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access") )
@@ -255,6 +263,10 @@ class SellController extends Controller
 
                     return $invoice_no;
                  })
+                 ->editColumn('numerofel', function ($row) {
+
+                    return $row->numerofel;
+                })
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("sell.view")) {
@@ -263,7 +275,7 @@ class SellController extends Controller
                             return '';
                         }
                     }])
-                ->rawColumns(['final_total', 'action', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no'])
+                ->rawColumns(['final_total', 'action', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no','numerofel'])
                 ->make(true);
         }
         return view('sell.index');
