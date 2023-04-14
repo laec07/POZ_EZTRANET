@@ -91,6 +91,7 @@ class SellController extends Controller
                     'transactions.is_direct_sale',
                     'transactions.invoice_no',
                     'fel.numerofel',
+                    'fel.numeroautorizacion',
                     'contacts.name',
                     'transactions.payment_status',
                     'transactions.final_total',
@@ -178,7 +179,7 @@ class SellController extends Controller
 
                 return view('sale_pos.partials.suspended_sales_modal')->with(compact('sales', 'is_tables_enabled', 'is_service_staff_enabled'));
             }
-
+            $numeroautorizacion = 'fel.numeroautorizacion';
             return Datatables::of($sells)
                 ->addColumn(
                     'action',
@@ -208,6 +209,11 @@ class SellController extends Controller
 
                     @if(auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access") )
                         <li><a href="#" class="print-invoice" data-href="{{route(\'sell.printInvoice\', [$id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a></li>
+                    @endif
+                    @if(auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access") )
+                        @if(!empty($numeroautorizacion))
+                            <li><a target="_blank" href="https://report.feel.com.gt/ingfacereport/ingfacereport_documento?uuid={{$numeroautorizacion}}"  ><i class="fa fa-print" aria-hidden="true"></i> Factura FEL</a></li>
+                        @endif
                     @endif
                     
                     <li class="divider"></li> 
