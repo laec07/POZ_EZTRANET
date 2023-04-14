@@ -594,6 +594,16 @@ class TransactionUtil extends Util
         $impuestoTotal=0;
         $impuesto=0;
         $identificador = $business_details->id.$transaction_id.$transaction->invoice_no;
+        if(empty($customer->email)){
+            $correos=$location_details->email;
+        }else{
+            if(empty($location_details->email)){
+                $correos=$customer->email;
+            }else{
+                $correos=$customer->email.';'.$location_details->email;
+            }
+             
+        }
         //Generar XML
             $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
             <dte:GTDocumento xmlns:dte="http://www.sat.gob.gt/dte/fel/0.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="0.1" xsi:schemaLocation="http://www.sat.gob.gt/dte/fel/0.2.0"></dte:GTDocumento>');
@@ -628,7 +638,7 @@ class TransactionUtil extends Util
             $dte_DireccionEmisor->addChild('Pais', 'GT');
             // SAT -> DTE -> DatosEmision -> Receptor
             $dte_Receptor = $dte_DatosEmision->addChild('dte:Receptor');
-            $dte_Receptor->addAttribute('CorreoReceptor', $customer->email.';'.$location_details->email);
+            $dte_Receptor->addAttribute('CorreoReceptor', $correos);
             $dte_Receptor->addAttribute('IDReceptor', $customer->contact_id);
             $dte_Receptor->addAttribute('NombreReceptor', $customer->name);
             // SAT -> DTE -> DatosEmision -> Receptor -> DireccionReceptor
@@ -700,7 +710,7 @@ class TransactionUtil extends Util
        //Convierte XML a base64
         $archivo= base64_encode($xmlString);
 
-        //Cliente para envío POSTO
+        //Cliente para envío POST
         $client = new Client();
         // Envío para firmar XML
         $response = $client->post('https://signer-emisores.feel.com.gt/sign_solicitud_firmas/firma_xml', [
@@ -746,7 +756,7 @@ class TransactionUtil extends Util
                 //validación si respuesta es incorrecta
                 # Accion si ocurre un error
                 $fileError3 = 'file_fel/Firm'.$transaction_id.'Error.txt';
-                file_put_contents($fileError3, $data->resultado);
+                file_put_contents($fileError3, $xmlString);
                 throw new PurchaseSellMismatch("Error al firmar documento ".$data->descripcion);
                 
             }
@@ -788,6 +798,7 @@ class TransactionUtil extends Util
                 $felfac->fechacertificacion =$Fecha;
                 $felfac->numerofel =$resultado->numero;
                 $felfac->seriefel =$resultado->serie;
+                $felfac->impuestototal=$impuestoTotal;
                 $felfac->save();
 
                 return $resultado->uuid;
@@ -813,6 +824,82 @@ class TransactionUtil extends Util
     // $file = 'file'.$transaction_id.'SinFirma.xml';
     // file_put_contents($file, $xmlString);
     }
+
+    //Anular facturas FEL LAEC 2023
+    /**
+     * Gives the receipt details in proper format.
+     *
+     * @param int $transaction_id
+     * @param array $business_details
+     *
+     * @return array
+     */
+    public function GenerateAnulationFEL($transaction_id, $business_details){
+
+        // Fecha Actual
+        $now = Carbon::now();
+        $Fecha = Carbon::now()->format('Y-m-d');
+
+        $fel = FelFacturas::where('id_transaction', $transaction_id)->first();
+        
+        $xmlA = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" standalone="no"?><dte:GTAnulacionDocumento Version="0.1" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:dte="http://www.sat.gob.gt/dte/fel/0.1.0" xmlns:n1="http://www.altova.com/samplexml/other-namespace"><dte:SAT><dte:AnulacionDTE ID="DatosCertificados"><dte:DatosGenerales ID="DatosAnulacion" NumeroDocumentoAAnular="'.$fel->numeroautorizacion.'" NITEmisor="40392880" IDReceptor="'.$fel->nitreceptor.'" FechaEmisionDocumentoAnular="'.$fel->fechacertificacion.'T00:00:00-06:00" FechaHoraAnulacion="'.$Fecha.'T00:00:00-06:00" MotivoAnulacion="Anulacion"/></dte:AnulacionDTE></dte:SAT></dte:GTAnulacionDocumento>');
+        
+        //Paso XML a un string
+        $xmlStringA = $xmlA->asXML();
+        //$filea = 'file_fel/'.$transaction_id.'Anul.xml';
+        //file_put_contents($filea, $xmlA);
+        //Cliente para envío POST
+        $client = new Client();
+        //Mando archivo firmado para certificarse
+        $responceanul = $client->request('POST', 'https://certificador.feel.com.gt/fel/procesounificado/transaccion/v2/xml',
+        [
+            'headers' => [
+                'Content-Type' => 'application/xml',
+                'UsuarioFirma'=> '40392880',
+                'UsuarioApi'=> '40392880',
+                'LlaveApi'=> '2BB07EADC6857A6DA9012985C3B2C288',
+                'LlaveFirma'=> '1f580f2213070c2642c0fbd7dda6d6e0',
+                'identificador'=> $fel->no_acceso
+            ],
+            'body' => $xmlStringA
+        ]
+        );
+        $estado=$responceanul->getStatusCode();
+
+        if($estado=='200'){
+            $resultadoanul=$responceanul->getBody()->getContents(); // recibe un json  
+            $resultado = json_decode($resultadoanul); //paso el json recibido a array
+            if ($resultado->resultado=='true') {
+                # Acción si es correcto
+                // Guardar el XML Certificado en bd
+                
+                $fel->fel_anulado=$resultado->xml_certificado;
+                $fel->estado='ANUL';
+                $fel->update();
+
+                return $fel->numeroautorizacion;
+                // Guardar el XML Certificado en un archivo
+                //$file3 = 'file'.$transaction_id.'Certificado.xml';
+                //file_put_contents($file3, $resultado->xml_certificado);
+               
+            }else{
+                # Accion si ocurre un error
+                $fileError3 = 'file_fel/ANUL'.$transaction_id.'Error.txt';
+                file_put_contents($fileError3, $resultadoanul);
+                throw new PurchaseSellMismatch("Error al Anular documento con SAT".$resultado->descripcion);
+            }
+
+  
+        
+        }else{
+            //validación si respuesta es incorrecta
+            throw new PurchaseSellMismatch("Error al Anular documento con SAT".$estado);
+        }
+    }
+
+
+
+
     /**
      * Gives the receipt details in proper format.
      *
