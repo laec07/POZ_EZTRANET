@@ -196,7 +196,7 @@ class SellController extends Controller
                     @endif
                     @if($is_direct_sale == 0)
                         @can("sell.update")
-                        <li><a target="_blank" href="{{action(\'SellPosController@edit\', [$id])}}"><i class="fa fa-money"></i> @lang("lang_v1.edit_pay")</a></li>
+                        <!-- <li><a target="_blank" href="{{action(\'SellPosController@edit\', [$id])}}"><i class="fa fa-money"></i> @lang("lang_v1.edit_pay")</a></li> -->
                         @endcan
                         @else
                         @can("direct_sell.access")
@@ -224,9 +224,12 @@ class SellController extends Controller
                     @endif
                         <li><a href="{{action(\'TransactionPaymentController@show\', [$id])}}" class="view_payment_modal"><i class="fa fa-money"></i> @lang("purchase.view_payments")</a></li>
                     @can("sell.create")
-                        <li><a href="{{action(\'SellController@duplicateSell\', [$id])}}"><i class="fa fa-copy"></i> @lang("lang_v1.duplicate_sell")</a></li>
+                     <!--   <li><a href="{{action(\'SellController@duplicateSell\', [$id])}}"><i class="fa fa-copy"></i> @lang("lang_v1.duplicate_sell")</a></li>-->
 
-                        <li><a href="{{action(\'SellReturnController@add\', [$id])}}"><i class="fa fa-undo"></i> @lang("lang_v1.sell_return")</a></li>
+                        
+                    @endcan
+                    @can("direct_sell.access")
+                    <li><a href="{{action(\'SellReturnController@add\', [$id])}}"><i class="fa fa-undo"></i> @lang("lang_v1.sell_return")</a></li>
                     @endcan
                     @can("send_notification")
                         <li><a href="#" data-href="{{action(\'NotificationController@getTemplate\', ["transaction_id" => $id,"template_for" => "new_sale"])}}" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i> @lang("lang_v1.new_sale_notification")</a></li>
