@@ -604,6 +604,7 @@ class TransactionUtil extends Util
             }
              
         }
+        
         //Generar XML
             $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
             <dte:GTDocumento xmlns:dte="http://www.sat.gob.gt/dte/fel/0.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="0.1" xsi:schemaLocation="http://www.sat.gob.gt/dte/fel/0.2.0"></dte:GTDocumento>');
@@ -662,6 +663,7 @@ class TransactionUtil extends Util
             // SAT -> DTE -> DatosEmision -> Items -> Item  
             //Detalle de producto <<<<---
         foreach ($details['lines'] as $line) {
+            $num = (float)str_replace(',', '', $line['line_total']); //Se formatea string a texto cuando por la , y . laec052023
             $impuesto=$line['unit_price_inc_tax']*0.12;
             $dte_Item = $dte_Items->addChild('dte:Item');
             $dte_Item->addAttribute('BienOServicio', 'B');
@@ -670,7 +672,7 @@ class TransactionUtil extends Util
             $dte_Item->addChild('UnidadMedida', $line['units']);
             $dte_Item->addChild('Descripcion', $line['name']);
             $dte_Item->addChild('PrecioUnitario', $line['unit_price_inc_tax']);
-            $dte_Item->addChild('Precio', $line['line_total']);
+            $dte_Item->addChild('Precio', $num);
             $dte_Item->addChild('Descuento',$line['line_discount'] );
             // SAT -> DTE -> DatosEmision -> Items -> Item -> Impuestos
             $dte_Impuestos = $dte_Item->addChild('dte:Impuestos');
@@ -678,14 +680,12 @@ class TransactionUtil extends Util
             $dte_Impuesto = $dte_Impuestos->addChild('dte:Impuesto');
             $dte_Impuesto->addChild('NombreCorto', 'IVA');
             $dte_Impuesto->addChild('CodigoUnidadGravable', '1');
-           // $dte_Impuesto->addChild('MontoGravable', number_format($line['line_total']- ($impuesto*$line['quantity']),2));
-           // $dte_Impuesto->addChild('MontoImpuesto', $impuesto*$line['quantity']);
-            $montoGravable=($line['line_total']-$line['line_discount'])/1.12;
-            $MontoImpuesto =$line['line_total']-$montoGravable;
-            $dte_Impuesto->addChild('MontoGravable', number_format($montoGravable,4));
-            $dte_Impuesto->addChild('MontoImpuesto', number_format($MontoImpuesto,4));
+            $montoGravable= number_format(($num-$line['line_discount'])/1.12,2, '.', ''); //dos decimales sin coma cuando pasa de mil
+            $MontoImpuesto =$num-$montoGravable;
+            $dte_Impuesto->addChild('MontoGravable', $montoGravable);
+            $dte_Impuesto->addChild('MontoImpuesto', number_format($MontoImpuesto,2, '.', '')); //dos decimales sin coma cuando pasa de mil
             // SAT -> DTE -> DatosEmision -> Items -> Item -> Total
-            $dte_Item->addChild('Total', $line['line_total']);
+            $dte_Item->addChild('Total', $num);
             $Corr++;
             $impuestoTotal=$impuestoTotal+$MontoImpuesto;
         }//finaliza detalle de producto
@@ -696,7 +696,7 @@ class TransactionUtil extends Util
             // SAT -> DTE -> DatosEmision -> Totales -> TotalImpuestos -> TotalImpuesto 
             $dte_TotalImpuesto = $dte_TotalImpuestos->addChild('dte:TotalImpuesto');
             $dte_TotalImpuesto->addAttribute('NombreCorto', 'IVA');
-            $dte_TotalImpuesto->addAttribute('TotalMontoImpuesto', number_format($impuestoTotal,4));
+            $dte_TotalImpuesto->addAttribute('TotalMontoImpuesto', number_format($impuestoTotal,2, '.', ''));
             // SAT -> DTE -> DatosEmision -> Totales -> GranTotal  
             $dte_Totales->addChild('GranTotal', $transaction->final_total );
             // SAT -> DTE
