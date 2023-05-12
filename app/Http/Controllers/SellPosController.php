@@ -389,14 +389,17 @@ class SellPosController extends Controller
                     $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
 
                     // Llamado para generar XMLInfile LAEC
-                    
-                    //Detalles empresa
-                    $business_details = $this->businessUtil->getDetails($business_id);
-                    $location_details = BusinessLocation::find($input['location_id']);
-                    //detalle factura
-                    $invoice_layout = $this->businessUtil->invoiceLayout($business_id, $input['location_id'], $location_details->invoice_layout_id);
-                    //Generacion XML y Certificacion de facturas
-                    $felauth=$this->transactionUtil->GenerateXMLInfile($transaction->id,  $input['location_id'], $invoice_layout,$business_details, $location_details, 'printer');
+                    if($request->input('ffel')=='1'){
+                        //Detalles empresa
+                        $business_details = $this->businessUtil->getDetails($business_id);
+                        $location_details = BusinessLocation::find($input['location_id']);
+                        //detalle factura
+                        $invoice_layout = $this->businessUtil->invoiceLayout($business_id, $input['location_id'], $location_details->invoice_layout_id);
+                        //Generacion XML y Certificacion de facturas
+                        $felauth=$this->transactionUtil->GenerateXMLInfile($transaction->id,  $input['location_id'], $invoice_layout,$business_details, $location_details, 'printer');
+                    }else{
+                        $felauth ='';
+                    }
 
                     //Auto send notification
                     $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
