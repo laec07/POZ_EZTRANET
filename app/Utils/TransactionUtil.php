@@ -715,10 +715,11 @@ class TransactionUtil extends Util
         // Envío para firmar XML
         $response = $client->post('https://signer-emisores.feel.com.gt/sign_solicitud_firmas/firma_xml', [
                             'form_params' => [
-                                'llave' => '1f580f2213070c2642c0fbd7dda6d6e0',
+                                //'llave' => '1f580f2213070c2642c0fbd7dda6d6e0', Pruebas
+                                'llave' => '37091efa07c21fc0471f1a91e911821e',
                                 'archivo' => $archivo,
                                 'codigo' => $identificador,
-                                'alias' => '40392880',
+                                'alias' => '40392880PRO',
                                 'es_anulacion' => 'N'
 
                             ]
@@ -771,7 +772,7 @@ class TransactionUtil extends Util
         [
             'headers' => [
                 'Content-Type' => 'application/json',
-                'usuario'=> '40392880',
+                'usuario'=> '40392880PRO',
                 'llave'=> '2BB07EADC6857A6DA9012985C3B2C288',
                 'identificador'=> $identificador
             ],
@@ -855,10 +856,11 @@ class TransactionUtil extends Util
         [
             'headers' => [
                 'Content-Type' => 'application/xml',
-                'UsuarioFirma'=> '40392880',
-                'UsuarioApi'=> '40392880',
+                'UsuarioFirma'=> '40392880PRO',
+                'UsuarioApi'=> '40392880PRO',
                 'LlaveApi'=> '2BB07EADC6857A6DA9012985C3B2C288',
-                'LlaveFirma'=> '1f580f2213070c2642c0fbd7dda6d6e0',
+                //'LlaveFirma'=> '1f580f2213070c2642c0fbd7dda6d6e0', pruebas
+                'LlaveFirma' => '37091efa07c21fc0471f1a91e911821e',
                 'identificador'=> $fel->no_acceso
             ],
             'body' => $xmlStringA
