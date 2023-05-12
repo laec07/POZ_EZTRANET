@@ -11,6 +11,7 @@ use App\TransactionSellLine;
 use App\User;
 use App\CustomerGroup;
 use App\SellingPriceGroup;
+use App\FelFacturas; // laec tabla fel
 use Yajra\DataTables\Facades\DataTables;
 use DB;
 
@@ -75,6 +76,12 @@ class SellController extends Controller
                     '=',
                     'SR.return_parent_id'
                 )
+                ->leftJoin(
+                    'fel_facturas AS fel',
+                    'transactions.id',
+                    '=',
+                    'fel.id_transaction'
+                )
                 ->where('transactions.business_id', $business_id)
                 ->where('transactions.type', 'sell')
                 ->where('transactions.status', 'final')
@@ -83,6 +90,8 @@ class SellController extends Controller
                     'transactions.transaction_date',
                     'transactions.is_direct_sale',
                     'transactions.invoice_no',
+                    'fel.numerofel',
+                    'fel.numeroautorizacion',
                     'contacts.name',
                     'transactions.payment_status',
                     'transactions.final_total',
@@ -170,7 +179,7 @@ class SellController extends Controller
 
                 return view('sale_pos.partials.suspended_sales_modal')->with(compact('sales', 'is_tables_enabled', 'is_service_staff_enabled'));
             }
-
+            $numeroautorizacion = 'fel.numeroautorizacion';
             return Datatables::of($sells)
                 ->addColumn(
                     'action',
@@ -187,7 +196,7 @@ class SellController extends Controller
                     @endif
                     @if($is_direct_sale == 0)
                         @can("sell.update")
-                        <li><a target="_blank" href="{{action(\'SellPosController@edit\', [$id])}}"><i class="fa fa-money"></i> @lang("lang_v1.edit_pay")</a></li>
+                        <!-- <li><a target="_blank" href="{{action(\'SellPosController@edit\', [$id])}}"><i class="fa fa-money"></i> @lang("lang_v1.edit_pay")</a></li> -->
                         @endcan
                         @else
                         @can("direct_sell.access")
@@ -195,11 +204,16 @@ class SellController extends Controller
                         @endcan
                     @endif
                     @can("sell.delete")
-                    <li><a href="{{action(\'SellPosController@destroy\', [$id])}}" class="delete-sale"><i class="fa fa-trash"></i> @lang("messages.delete")</a></li>
+                   <!-- <li><a href="{{action(\'SellPosController@destroy\', [$id])}}" class="delete-sale"><i class="fa fa-trash"></i> @lang("messages.delete")</a></li>-->
                     @endcan
 
                     @if(auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access") )
                         <li><a href="#" class="print-invoice" data-href="{{route(\'sell.printInvoice\', [$id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a></li>
+                    @endif
+                    @if(auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access") )
+                        @if(!empty($numeroautorizacion))
+                            <li><a target="_blank" href="https://report.feel.com.gt/ingfacereport/ingfacereport_documento?uuid={{$numeroautorizacion}}"  ><i class="fa fa-print" aria-hidden="true"></i> Factura FEL</a></li>
+                        @endif
                     @endif
                     
                     <li class="divider"></li> 
@@ -210,9 +224,12 @@ class SellController extends Controller
                     @endif
                         <li><a href="{{action(\'TransactionPaymentController@show\', [$id])}}" class="view_payment_modal"><i class="fa fa-money"></i> @lang("purchase.view_payments")</a></li>
                     @can("sell.create")
-                        <li><a href="{{action(\'SellController@duplicateSell\', [$id])}}"><i class="fa fa-copy"></i> @lang("lang_v1.duplicate_sell")</a></li>
+                     <!--   <li><a href="{{action(\'SellController@duplicateSell\', [$id])}}"><i class="fa fa-copy"></i> @lang("lang_v1.duplicate_sell")</a></li>-->
 
-                        <li><a href="{{action(\'SellReturnController@add\', [$id])}}"><i class="fa fa-undo"></i> @lang("lang_v1.sell_return")</a></li>
+                        
+                    @endcan
+                    @can("direct_sell.access")
+                    <li><a href="{{action(\'SellReturnController@add\', [$id])}}"><i class="fa fa-undo"></i> @lang("lang_v1.sell_return")</a></li>
                     @endcan
                     @can("send_notification")
                         <li><a href="#" data-href="{{action(\'NotificationController@getTemplate\', ["transaction_id" => $id,"template_for" => "new_sale"])}}" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i> @lang("lang_v1.new_sale_notification")</a></li>
@@ -255,6 +272,10 @@ class SellController extends Controller
 
                     return $invoice_no;
                  })
+                 ->editColumn('numerofel', function ($row) {
+
+                    return $row->numerofel;
+                })
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("sell.view")) {
@@ -263,7 +284,7 @@ class SellController extends Controller
                             return '';
                         }
                     }])
-                ->rawColumns(['final_total', 'action', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no'])
+                ->rawColumns(['final_total', 'action', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no','numerofel'])
                 ->make(true);
         }
         return view('sell.index');

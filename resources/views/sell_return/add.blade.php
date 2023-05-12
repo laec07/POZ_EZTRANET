@@ -88,7 +88,8 @@
 						                    $check_decimal = 'true';
 						                }
 						            @endphp
-						            <input type="text" name="products[{{$loop->index}}][quantity]" value="{{@num_format($sell_line->quantity_returned)}}"
+									<!-- Se agrega el value, el total de las unidades compradas para anular factura FEL -->
+						            <input  readonly type="text" name="products[{{$loop->index}}][quantity]" value="{{$sell_line->formatted_qty}}" 
 						            class="form-control input-sm input_number return_qty"
 						            data-rule-abs_digit="{{$check_decimal}}" 
 						            data-msg-abs_digit="@lang('lang_v1.decimal_value_not_allowed')"
@@ -121,7 +122,7 @@
 				<div class="col-sm-4">
 					<div class="form-group">
 						{!! Form::label('discount_amount', __( 'purchase.discount_amount' ) . ':') !!}
-						{!! Form::text('discount_amount', @num_format($discount_amount), ['class' => 'form-control input_number']); !!}
+						{!! Form::text('discount_amount', @num_format($discount_amount), ['class' => 'form-control input_number', 'readonly']); !!}
 					</div>
 				</div>
 			</div>

@@ -37,6 +37,7 @@ use App\Category;
 use App\Brands;
 use App\Product;
 use App\CustomerGroup;
+use App\FelFacturas;
 use App\SellingPriceGroup;
 use App\NotificationTemplate;
 
@@ -387,9 +388,25 @@ class SellPosController extends Controller
                                 ];
                     $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
 
+                    // Llamado para generar XMLInfile LAEC
+                    if($request->input('ffel')=='1'){
+                        //Detalles empresa
+                        $business_details = $this->businessUtil->getDetails($business_id);
+                        $location_details = BusinessLocation::find($input['location_id']);
+                        //detalle factura
+                        $invoice_layout = $this->businessUtil->invoiceLayout($business_id, $input['location_id'], $location_details->invoice_layout_id);
+                        //Generacion XML y Certificacion de facturas
+                        $felauth=$this->transactionUtil->GenerateXMLInfile($transaction->id,  $input['location_id'], $invoice_layout,$business_details, $location_details, 'printer');
+                    }else{
+                        $felauth ='';
+                    }
+
                     //Auto send notification
                     $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
+
+
                 }
+                
 
                 DB::commit();
                 
@@ -397,8 +414,10 @@ class SellPosController extends Controller
                 $receipt = '';
                 if ($input['status'] == 'draft' && $input['is_quotation'] == 0) {
                     $msg = trans("sale.draft_added");
+                    $felauth ='';
                 } elseif ($input['status'] == 'draft' && $input['is_quotation'] == 1) {
                     $msg = trans("lang_v1.quotation_added");
+                    $felauth ='';
                     if (!$is_direct_sale) {
                         $receipt = $this->receiptContent($business_id, $input['location_id'], $transaction->id);
                     } else {
@@ -413,7 +432,7 @@ class SellPosController extends Controller
                     }
                 }
 
-                $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt ];
+                $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt, 'felauth' => $felauth ];
             } else {
                 $output = ['success' => 0,
                             'msg' => trans("messages.something_went_wrong")
@@ -482,6 +501,8 @@ class SellPosController extends Controller
 
         //Check if printing of invoice is enabled or not.
         if ($location_details->print_receipt_on_invoice == 1) {
+
+            
             //If enabled, get print type.
             $output['is_enabled'] = true;
 
@@ -491,7 +512,7 @@ class SellPosController extends Controller
             $receipt_printer_type = is_null($printer_type) ? $location_details->receipt_printer_type : $printer_type;
 
             $receipt_details = $this->transactionUtil->getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type);
-
+            //
             $receipt_details->currency = session('currency');
             
             //If print type browser - return the content, printer - return printer config data, and invoice format config
@@ -505,7 +526,6 @@ class SellPosController extends Controller
                 $output['html_content'] = view($layout, compact('receipt_details'))->render();
             }
         }
-        
         return $output;
     }
 
@@ -833,6 +853,17 @@ class SellPosController extends Controller
                 //Update product stock
                 $this->productUtil->adjustProductStockForInvoice($status_before, $transaction, $input);
 
+                // Llamado para generar XMLInfile LAEC
+                    
+                //Detalles empresa
+                $business_details = $this->businessUtil->getDetails($business_id);
+                $location_details = BusinessLocation::find($input['location_id']);
+                //detalle factura
+                $invoice_layout = $this->businessUtil->invoiceLayout($business_id, $input['location_id'], $location_details->invoice_layout_id);
+                //Generacion XML y Certificacion de facturas
+                $felauth=$this->transactionUtil->GenerateXMLInfile($transaction->id,  $input['location_id'], $invoice_layout,$business_details, $location_details, 'printer');
+
+
                 //Allocate the quantity from purchase and add mapping of
                 //purchase & sell lines in
                 //transaction_sell_lines_purchase_lines table
@@ -858,8 +889,10 @@ class SellPosController extends Controller
 
                 if ($input['status'] == 'draft' && $input['is_quotation'] == 0) {
                     $msg = trans("sale.draft_added");
+                    $felauth ='';
                 } elseif ($input['status'] == 'draft' && $input['is_quotation'] == 1) {
                     $msg = trans("lang_v1.quotation_updated");
+                    $felauth ='';
                     if (!$is_direct_sale) {
                         $receipt = $this->receiptContent($business_id, $input['location_id'], $transaction->id);
                     } else {
@@ -874,7 +907,7 @@ class SellPosController extends Controller
                     }
                 }
 
-                $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt ];
+                $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt, 'felauth' => $felauth ];
             } else {
                 $output = ['success' => 0,
                             'msg' => trans("messages.something_went_wrong")
