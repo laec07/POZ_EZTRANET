@@ -756,8 +756,8 @@ class TransactionUtil extends Util
                         //obtenemos el ID del registro para actualizarlo
                         $felfac = FelFacturas::find($felfac->id);
                     // Guardar el XML firmado en un archivo
-                    $file2 = 'file_fel/'.$transaction_id.'Firmado.xml';
-                    file_put_contents($file2, $body);
+                    //$file2 = 'file_fel/'.$transaction_id.'Firmado.xml';
+                    //file_put_contents($file2, $body);
             }else{
                 //validación si respuesta es incorrecta
                 # Accion si ocurre un error
