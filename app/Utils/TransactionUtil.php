@@ -641,7 +641,12 @@ class TransactionUtil extends Util
             $dte_Receptor = $dte_DatosEmision->addChild('dte:Receptor');
             $dte_Receptor->addAttribute('CorreoReceptor', $correos);
             $dte_Receptor->addAttribute('IDReceptor', $customer->contact_id);
-            $dte_Receptor->addAttribute('NombreReceptor', $customer->name);
+            if(strlen( $customer->contact_id)==13){
+                $dte_Receptor->addAttribute('NombreReceptor', 'CONSUMIDOR FINAL');
+                $dte_Receptor->addAttribute('TipoEspecial', 'CUI'); 
+            }else {
+                $dte_Receptor->addAttribute('NombreReceptor', $customer->name);
+            }
             // SAT -> DTE -> DatosEmision -> Receptor -> DireccionReceptor
             $dte_DireccionReceptor = $dte_Receptor->addChild('dte:DireccionReceptor');
             $dte_DireccionReceptor->addChild('Direccion', $customer->landmark);
@@ -751,8 +756,8 @@ class TransactionUtil extends Util
                         //obtenemos el ID del registro para actualizarlo
                         $felfac = FelFacturas::find($felfac->id);
                     // Guardar el XML firmado en un archivo
-                    //$file2 = 'file_fel/'.$transaction_id.'Firmado.xml';
-                    //file_put_contents($file2, $body);
+                    $file2 = 'file_fel/'.$transaction_id.'Firmado.xml';
+                    file_put_contents($file2, $body);
             }else{
                 //validación si respuesta es incorrecta
                 # Accion si ocurre un error
