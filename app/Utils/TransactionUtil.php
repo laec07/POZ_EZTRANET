@@ -673,7 +673,8 @@ class TransactionUtil extends Util
             $dte_Item = $dte_Items->addChild('dte:Item');
             $dte_Item->addAttribute('BienOServicio', 'B');
             $dte_Item->addAttribute('NumeroLinea', $Corr);
-            $dte_Item->addChild('Cantidad', $line['quantity']);
+            $cantidad=(float)str_replace(',', '', $line['quantity']); //Se formatea string a texto cuando por la , y . laec052023
+            $dte_Item->addChild('Cantidad', $cantidad);
             $dte_Item->addChild('UnidadMedida', $line['units']);
             $dte_Item->addChild('Descripcion', $line['name']);
             $dte_Item->addChild('PrecioUnitario', $line['unit_price_inc_tax']);
