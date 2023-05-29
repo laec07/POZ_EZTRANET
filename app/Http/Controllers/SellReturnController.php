@@ -339,13 +339,13 @@ class SellReturnController extends Controller
                 $receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
                 //Generacion Anulacion FEL LAEC 2023  
                 $fel = FelFacturas::where('id_transaction', $id)->first();
-                if(empty($fel)){
-                    $felauth ='Fel no encontrada';
+             /*   if(empty($fel)){
+                    
                 }else{
                     $felauth=$this->transactionUtil->GenerateAnulationFEL($sell->id,  $business_id );
-                }
+                }*/
               //  
-
+              $felauth ='';
                 DB::commit();
 
                 $output = ['success' => 1,
