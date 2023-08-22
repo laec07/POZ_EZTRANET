@@ -5,7 +5,7 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header no-print">
-    <h1>@lang( 'sale.sells')
+    <h1><!-- @lang( 'sale.sells')--> Suscripciones
         <small></small>
     </h1>
 </section>
@@ -14,7 +14,7 @@
 <section class="content no-print">
 	<div class="box">
         <div class="box-header">
-        	<h3 class="box-title">@lang( 'lang_v1.all_sales')</h3>
+        	<!-- <h3 class="box-title">@lang( 'lang_v1.all_sales')</h3>--> <h3 class="box-title">Todas las sucripciones</h3>
             @can('sell.create')
             	<div class="box-tools">
                     <a class="btn btn-block btn-primary" href="{{action('SellController@create')}}">
@@ -48,6 +48,7 @@
     						<th>@lang('sale.customer_name')</th>
                             <th>@lang('sale.location')</th>
                             <th>@lang('sale.payment_status')</th>
+                            <th>Siguiente Pago</th>
     						<th>@lang('sale.total_amount')</th>
                             <th>@lang('sale.total_paid')</th>
                             <th>@lang('purchase.payment_due')</th>
@@ -87,6 +88,7 @@
 
 @section('javascript')
 <script type="text/javascript">
+    
 $(document).ready( function(){
     //Date range as a button
     $('#sell_date_filter').daterangepicker(
@@ -100,7 +102,6 @@ $(document).ready( function(){
         $('#sell_date_filter').html('<i class="fa fa-calendar"></i> {{ __("messages.filter_by_date") }}');
         sell_table.ajax.reload();
     });
-
     sell_table = $('#sell_table').DataTable({
         processing: true,
         serverSide: true,
@@ -116,7 +117,7 @@ $(document).ready( function(){
             }
         },
         columnDefs: [ {
-            "targets": 9,
+            "targets": 10,
             "orderable": false,
             "searchable": false
         } ],
@@ -127,6 +128,7 @@ $(document).ready( function(){
             { data: 'name', name: 'contacts.name'},
             { data: 'business_location', name: 'bl.name'},
             { data: 'payment_status', name: 'payment_status'},
+            { data: 'next_pay', name: 'next_pay'},
             { data: 'final_total', name: 'final_total'},
             { data: 'total_paid', name: 'total_paid'},
             { data: 'total_remaining', name: 'total_remaining'},
@@ -135,7 +137,7 @@ $(document).ready( function(){
         columnDefs: [
                 {
                     'searchable'    : false, 
-                    'targets'       : [3,7] 
+                    'targets'       : [3,8] 
                 },
             ],
         "fnDrawCallback": function (oSettings) {
