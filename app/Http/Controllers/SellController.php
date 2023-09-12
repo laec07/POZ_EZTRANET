@@ -245,10 +245,6 @@ class SellController extends Controller
                     'total_paid',
                     '<span class="display_currency total-paid" data-currency_symbol="true" data-orig-value="{{$total_paid}}">{{$total_paid}}</span>'
                 )
-                ->editColumn(
-                    'next_pay',
-                    '22/08/2023'
-                )
                 ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
                 ->editColumn(
                     'payment_status',
