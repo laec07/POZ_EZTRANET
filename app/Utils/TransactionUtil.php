@@ -625,10 +625,10 @@ class TransactionUtil extends Util
             // SAT -> DTE -> DatosEmision -> Emisor
             $dte_Emisor = $dte_DatosEmision->addChild('dte:Emisor');
             $dte_Emisor->addAttribute('AfiliacionIVA', 'GEN');
-            $dte_Emisor->addAttribute('CodigoEstablecimiento', '3');
+            $dte_Emisor->addAttribute('CodigoEstablecimiento', $location_details->zip_code);
             $dte_Emisor->addAttribute('CorreoEmisor', $location_details->email);
             $dte_Emisor->addAttribute('NITEmisor', '40392880');
-            $dte_Emisor->addAttribute('NombreComercial', $business_details->name);
+            $dte_Emisor->addAttribute('NombreComercial', $location_details->name);
             $dte_Emisor->addAttribute('NombreEmisor', 'JUAN ROBERTO, FÉLIX PEDRO');
             // SAT -> DTE -> DatosEmision -> Emisor -> DireccionEmisor
             $dte_DireccionEmisor = $dte_Emisor->addChild('dte:DireccionEmisor');
