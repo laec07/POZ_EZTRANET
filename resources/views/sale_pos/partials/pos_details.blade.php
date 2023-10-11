@@ -33,7 +33,7 @@
 
 								</span>
 							</div>
-
+								
 							<div class="col-sm-2 col-xs-6 d-inline-table">
 
 								<span class="@if($pos_settings['disable_order_tax'] != 0) hide @endif">
@@ -95,18 +95,18 @@
 					<tr>
 						<td>
 							<div class="col-sm-2 col-xs-6 col-2px-padding">
-
 								<button type="button" 
-									class="btn btn-warning btn-block btn-flat @if($pos_settings['disable_draft'] != 0) hide @endif" 
+									class="btn btn-warning btn-block btn-flat @if($users == 'CajeroF') hide @endif" 
 									id="pos-draft">@lang('sale.draft')</button>
 
 								<button type="button" 
-									class="btn btn-info btn-block btn-flat" 
+									class="btn btn-info btn-block btn-flat @if($users == 'CajeroF' or $users == 'VendedorF') hide @endif" 
 									id="pos-quotation">@lang('lang_v1.quotation')</button>
 							</div>
 							<div class="col-sm-3 col-xs-6 col-2px-padding">
+								@if($users == 'CajeroF')
 								<button type="button" 
-								class="btn bg-maroon btn-block btn-flat no-print @if(!empty($pos_settings['disable_suspend'])) pos-express-btn btn-lg @endif pos-express-finalize" 
+								class="btn bg-maroon btn-block btn-flat no-print @if(!empty($pos_settings['disable_suspend']) ) pos-express-btn btn-lg @endif pos-express-finalize" 
 								data-pay_method="card"
 								title="@lang('lang_v1.tooltip_express_checkout_card')" >
 								<div class="text-center">
@@ -114,6 +114,7 @@
     								<b>@lang('lang_v1.express_checkout_card')</b>
     							</div>
 								</button>
+								@endif
 								@if(empty($pos_settings['disable_suspend']))
 									<button type="button" 
 									class="btn bg-red btn-block btn-flat no-print pos-express-finalize" 
@@ -127,7 +128,7 @@
 								@endif
 							</div>
 							<div class="col-sm-4 col-xs-12 col-2px-padding">
-								<button type="button" class="btn bg-navy  btn-block btn-flat btn-lg no-print @if($pos_settings['disable_pay_checkout'] != 0) hide @endif pos-express-btn" id="pos-finalize" title="@lang('lang_v1.tooltip_checkout_multi_pay')">
+								<button type="button" class="btn bg-navy  btn-block btn-flat btn-lg no-print @if($pos_settings['disable_pay_checkout'] != 0 or $users == 'VendedorF') hide @endif pos-express-btn" id="pos-finalize" title="@lang('lang_v1.tooltip_checkout_multi_pay')">
 								<div class="text-center">
 									<i class="fa fa-check" aria-hidden="true"></i>
     								<b>@lang('lang_v1.checkout_multi_pay')</b>
@@ -135,14 +136,16 @@
 								</button>
 							</div>
 							<div class="col-sm-3 col-xs-12 col-2px-padding">
-								<button type="button" class="btn btn-success btn-block btn-flat btn-lg no-print @if($pos_settings['disable_express_checkout'] != 0) hide @endif pos-express-btn pos-express-finalize"
+								<button type="button" class="btn btn-success btn-block btn-flat btn-lg no-print @if($pos_settings['disable_express_checkout'] != 0 or $users == 'VendedorF') hide @endif pos-express-btn pos-express-finalize"
 								data-pay_method="cash"
 								title="@lang('tooltip.express_checkout')">
 								<div class="text-center">
 									<i class="fa fa-check" aria-hidden="true"></i>
     								<b>@lang('lang_v1.express_checkout_cash')</b>
     							</div>
+								
 								</button>
+								<label><input type="checkbox" name="ffel" id="ffel" value="1"  checked>Factura FEL</label> <!-- Habilitar y deshabilitar facturacion Fel-->
 							</div>
 
 							<div class="div-overlay pos-processing"></div>

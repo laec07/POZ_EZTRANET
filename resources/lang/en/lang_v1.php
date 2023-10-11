@@ -564,4 +564,6 @@ return [
     'years' => 'Years',
     'download' => 'Download',
     'previous_file_will_be_replaced' => 'Previously uploaded file will be replaced',
+    "autori" => "Do you need authorization?",
+    "enable_autori_help" => "Indicates prior authorization of the sale",
 ];

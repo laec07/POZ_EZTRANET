@@ -33,6 +33,7 @@
             			<tr>
             				<th>@lang( 'lang_v1.name' )</th>
             				<th>@lang( 'lang_v1.description' )</th>
+                            <th>@lang( 'lang_v1.autori' )</th>
             				<th>@lang( 'messages.action' )</th>
             			</tr>
             		</thead>
@@ -58,7 +59,7 @@
                         serverSide: true,
                         ajax: '/selling-price-group',
                         columnDefs: [ {
-                            "targets": 2,
+                            "targets": 3,
                             "orderable": false,
                             "searchable": false
                         } ]

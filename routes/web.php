@@ -10,12 +10,12 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-/*
+/*/
 DB::listen(function($query){
   //Imprimimos la consulta ejecutada
   echo "<pre> {$query->sql } </pre>";
 });
-*/
+/*/
 include_once('install_r.php');
 
 Route::middleware(['IsInstalled'])->group(function () {
@@ -103,6 +103,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::post('/sells/pos/get_payment_row', 'SellPosController@getPaymentRow');
     Route::get('/sells/pos/get-recent-transactions', 'SellPosController@getRecentTransactions');
     Route::get('/sells/{transaction_id}/print', 'SellPosController@printInvoice')->name('sell.printInvoice');
+    Route::get('/sells/{transaction_id}/auth', 'SellPosController@AuthSell')->name('sell.AuthSell');
     Route::get('/sells/pos/get-product-suggestion', 'SellPosController@getProductSuggestion');
     Route::resource('pos', 'SellPosController');
 

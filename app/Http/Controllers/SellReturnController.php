@@ -14,6 +14,7 @@ use App\Utils\TransactionUtil;
 use App\Utils\ContactUtil;
 use App\Utils\BusinessUtil;
 use App\Utils\ModuleUtil;
+use App\FelFacturas; // laec tabla fel
 
 use Yajra\DataTables\Facades\DataTables;
 
@@ -336,11 +337,13 @@ class SellReturnController extends Controller
                     }
                 }
                 $receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
+                //Generacion Anulacion FEL LAEC 2023  
+                $felauth=$this->transactionUtil->GenerateAnulationFEL($sell->id,  $business_id );
                 DB::commit();
 
                 $output = ['success' => 1,
                             'msg' => __('lang_v1.success'),
-                            'receipt' => $receipt
+                            'receipt' => $receipt, 'felauth' => $felauth
                         ];
             }
         } catch (\Exception $e) {

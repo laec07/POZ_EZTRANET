@@ -44,6 +44,7 @@
             			<tr>
             				<th>@lang('messages.date')</th>
                             <th>@lang('sale.invoice_no')</th>
+                            <th>@lang('No. Fel')</th>
     						<th>@lang('sale.customer_name')</th>
                             <th>@lang('sale.location')</th>
                             <th>@lang('sale.payment_status')</th>
@@ -86,6 +87,7 @@
 
 @section('javascript')
 <script type="text/javascript">
+    
 $(document).ready( function(){
     //Date range as a button
     $('#sell_date_filter').daterangepicker(
@@ -99,7 +101,6 @@ $(document).ready( function(){
         $('#sell_date_filter').html('<i class="fa fa-calendar"></i> {{ __("messages.filter_by_date") }}');
         sell_table.ajax.reload();
     });
-
     sell_table = $('#sell_table').DataTable({
         processing: true,
         serverSide: true,
@@ -115,13 +116,14 @@ $(document).ready( function(){
             }
         },
         columnDefs: [ {
-            "targets": 8,
+            "targets": 9,
             "orderable": false,
             "searchable": false
         } ],
         columns: [
             { data: 'transaction_date', name: 'transaction_date'  },
             { data: 'invoice_no', name: 'invoice_no'},
+            { data: 'numerofel', name: 'numerofel', searchable: false},
             { data: 'name', name: 'contacts.name'},
             { data: 'business_location', name: 'bl.name'},
             { data: 'payment_status', name: 'payment_status'},
@@ -133,7 +135,7 @@ $(document).ready( function(){
         columnDefs: [
                 {
                     'searchable'    : false, 
-                    'targets'       : [6] 
+                    'targets'       : [3,7] 
                 },
             ],
         "fnDrawCallback": function (oSettings) {
