@@ -528,4 +528,6 @@ return [
 "enable_selected_contacts" => "Restringir contactos seleccionados", 
 "tooltip_enable_selected_contacts" => "Restrinja el acceso a los contactos seleccionados en el cuadro de búsqueda vendedor / compra cliente / proveedor", 
 "selected_contacts" => "Seleccionar Contactos", 
+"unit_purchase_price"  => "Precio compra unidad",
+"total_purchase_price"  => "Total precio compra",
 ];
