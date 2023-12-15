@@ -61,8 +61,12 @@ $(document).ready( function(){
                                 {data: 'total_sold', name: 'total_sold', searchable: false},
                                 {data: 'total_transfered', name: 'total_transfered', searchable: false},
                                 {data: 'total_adjusted', name: 'total_adjusted', searchable: false},
+                                {data: 't1_price', name: 't1_price', searchable: false},
+                                {data: 't2_price', name: 't2_price', searchable: false},
+                                {data: 't3_price', name: 't3_price', searchable: false},
                                 {data: 'unit_purchase_price', name: 'unit_purchase_price', searchable: false},
                                 {data: 'purchase_price', name: 'purchase_price', searchable: false}
+
                             ],
                             "fnDrawCallback": function (oSettings) {
                                 $('#footer_total_stock').html(__sum_stock($('#stock_report_table'), 'current_stock'));
