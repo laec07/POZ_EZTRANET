@@ -371,8 +371,7 @@ class ReportController extends Controller
             }
 
             $products = $query->select(
-                // DB::raw("(SELECT SUM(quantity) FROM transaction_sell_lines LEFT JOIN transactions ON transaction_sell_lines.transaction_id=transactions.id WHERE transactions.status='final' $location_filter AND
-                //     transaction_sell_lines.product_id=products.id) as total_sold"),
+
 
                 DB::raw("(SELECT SUM(IF(transactions.type='sell', TSL.quantity - TSL.quantity_returned , -1* TPL.quantity) ) FROM transactions 
                         LEFT JOIN transaction_sell_lines AS TSL ON transactions.id=TSL.transaction_id
@@ -389,6 +388,9 @@ class ReportController extends Controller
                         LEFT JOIN stock_adjustment_lines AS SAL ON transactions.id=SAL.transaction_id
                         WHERE transactions.status='received' AND transactions.type='stock_adjustment' $location_filter 
                         AND (SAL.variation_id=variations.id)) as total_adjusted"),
+                DB::raw("(SELECT SUM(IF(price_group_id = 6, vgp.price_inc_tax, 0)) FROM variation_group_prices vgp WHERE vgp.variation_id = variations.id) as t1_price"),
+                DB::raw("(SELECT SUM(IF(price_group_id = 7, vgp.price_inc_tax, 0)) FROM variation_group_prices vgp WHERE vgp.variation_id = variations.id) as t2_price"),
+                DB::raw("(SELECT SUM(IF(price_group_id = 8, vgp.price_inc_tax, 0)) FROM variation_group_prices vgp WHERE vgp.variation_id = variations.id) as t3_price"),
                 DB::raw("SUM(vld.qty_available) as stock"),
                 DB::raw("SUM(vld.qty_available)*variations.dpp_inc_tax as purchase_price"),
                 'variations.sub_sku as sku',
@@ -419,6 +421,31 @@ class ReportController extends Controller
                     }
                     return $name;
                 })
+                ->editColumn('t1_price', function ($row) {
+                    $t1_price = 0;
+                    if ($row->t1_price) {
+                        $t1_price =  (float)$row->t1_price;
+                    }
+
+                    return '<span class="display_currency t1_price" data-currency_symbol=true data-unit="Q"  data-orig-value="' . $t1_price . '"  >' . $t1_price . '</span> ' ;
+                })
+                ->editColumn('t2_price', function ($row) {
+                    $t2_price = 0;
+                    if ($row->t2_price) {
+                        $t2_price =  (float)$row->t2_price;
+                    }
+
+                    return '<span class="display_currency t2_price" data-currency_symbol=true data-unit="Q"  data-orig-value="' . $t2_price . '"  >' . $t2_price . '</span> ' ;
+                })
+                ->editColumn('t3_price', function ($row) {
+                    $t3_price = 0;
+                    if ($row->t3_price) {
+                        $t3_price =  (float)$row->t3_price;
+                    }
+
+                    return '<span class="display_currency t3_price" data-currency_symbol=true data-unit="Q"  data-orig-value="' . $t3_price . '"  >' . $t3_price . '</span> ' ;
+                })
+
                 ->editColumn('purchase_price', function ($row) {
                     $purchase_price = 0;
                     if ($row->purchase_price) {
@@ -427,6 +454,7 @@ class ReportController extends Controller
 
                     return '<span class="display_currency purchase_price" data-currency_symbol=true data-unit="Q"  data-orig-value="' . $purchase_price . '"  >' . $purchase_price . '</span> ' ;
                 })
+
                 ->editColumn('unit_purchase_price', function ($row) {
                     $name = $row->unit_purchase_price;
                     if ($row->type == 'variable') {
@@ -475,7 +503,7 @@ class ReportController extends Controller
                 ->removeColumn('unit')
                 ->removeColumn('id')
                 ->rawColumns(['unit_price', 'total_transfered', 'total_sold',
-                    'total_adjusted', 'stock','purchase_price'])
+                    'total_adjusted', 'stock','purchase_price','t1_price','t2_price','t3_price'])
                 ->make(true);
         }
 
